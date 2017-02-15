@@ -8,8 +8,11 @@ public class MovePieceScript : MonoBehaviour {
     [SerializeField]
     public float distanceClose;
 
-    bool buttonDown;
-    bool attached;
+    private bool buttonDown;
+    private bool attached;
+
+    private RaycastHit hit;
+    private Ray ray;
 
 	// Use this for initialization
 	void Start () {
@@ -18,21 +21,26 @@ public class MovePieceScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        
-        if (Input.GetMouseButtonDown(0))
+	void Update () 
+    {
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity)) 
         {
-            buttonDown = true;
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                buttonDown = true;
+            }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            buttonDown = false;
-        }
+            if (Input.GetMouseButtonUp(0))
+            {
+                buttonDown = false;
+            }
 
-        if (buttonDown == true && attached == false)
-        {
-            this.gameObject.transform.Translate(Input.GetAxis("Mouse X") / 3 , Input.GetAxis("Mouse Y") / 3, 0);
+            if (buttonDown == true && attached == false)
+            {
+                this.hit.point = new Vector3(this.hit.point.x, this.hit.point.y, 0.0f);
+                this.gameObject.transform.position = this.hit.point;
+            }
         }
         
         AttachToPiece();
@@ -42,21 +50,17 @@ public class MovePieceScript : MonoBehaviour {
     {
         GameObject nearestPiece = DetectNearestPiece();
         float diff = RetrieveDistBetweenPiece(this.gameObject, nearestPiece);
-        //float diff = (float)Math.Sqrt(Math.Pow(this.gameObject.transform.position.x - nearestPiece.transform.position.x, 2) + Math.Pow(this.gameObject.transform.position.y - nearestPiece.transform.position.y, 2) + Math.Pow(this.gameObject.transform.position.z - nearestPiece.transform.position.z, 2));
-
+        
         if (diff < distanceClose && attached == false)
         {
-            Debug.Log("test");
             GameObject inGameObject = FindingHierarchy.FindComponentInChildWithTag(nearestPiece, "In");
             GameObject outGameObject = FindingHierarchy.FindComponentInChildWithTag(this.gameObject, "Out");
 
-            //outGameObject.transform.parent.position = outGameObject.transform.position - outGameObject.transform.localPosition;
-            Vector3 vecPos = outGameObject.transform.localPosition;// this.gameObject.transform.localPosition;
-           // Vector3 offsetPosOut = outGameObject.transform.localPosition;
-            
+            Vector3 vecPos = outGameObject.transform.localPosition;
+
             outGameObject.transform.position = inGameObject.transform.position;
             this.gameObject.transform.localPosition = outGameObject.transform.position - vecPos;
-            //outGameObject.transform.parent.position = offsetPosOut;
+
             attached = true;
         }
     }
