@@ -6,9 +6,6 @@ using UnityEngine;
 public class MovePieceScript : MonoBehaviour {
 
     [SerializeField]
-    public GameObject otherPiece;
-
-    [SerializeField]
     public float distanceClose;
 
     bool buttonDown;
@@ -37,23 +34,28 @@ public class MovePieceScript : MonoBehaviour {
         {
             this.gameObject.transform.Translate(Input.GetAxis("Mouse X") / 3 , Input.GetAxis("Mouse Y") / 3, 0);
         }
-        GameObject test = DetectNearestPiece();
+        
         AttachToPiece();
 	}
 
     void AttachToPiece()
     {
-        float diff = (float)Math.Sqrt(Math.Pow(this.gameObject.transform.position.x - otherPiece.transform.position.x, 2) + Math.Pow(this.gameObject.transform.position.y - otherPiece.transform.position.y, 2) + Math.Pow(this.gameObject.transform.position.z - otherPiece.transform.position.z, 2));
+        GameObject nearestPiece = DetectNearestPiece();
+        float diff = RetrieveDistBetweenPiece(this.gameObject, nearestPiece);
+        //float diff = (float)Math.Sqrt(Math.Pow(this.gameObject.transform.position.x - nearestPiece.transform.position.x, 2) + Math.Pow(this.gameObject.transform.position.y - nearestPiece.transform.position.y, 2) + Math.Pow(this.gameObject.transform.position.z - nearestPiece.transform.position.z, 2));
 
         if (diff < distanceClose && attached == false)
         {
             Debug.Log("test");
-            GameObject inGameObject = FindingHierarchy.FindComponentInChildWithTag(otherPiece, "In");
+            GameObject inGameObject = FindingHierarchy.FindComponentInChildWithTag(nearestPiece, "In");
             GameObject outGameObject = FindingHierarchy.FindComponentInChildWithTag(this.gameObject, "Out");
 
             //outGameObject.transform.parent.position = outGameObject.transform.position - outGameObject.transform.localPosition;
-            Vector3 offsetPosOut = outGameObject.transform.localPosition;
+            Vector3 vecPos = outGameObject.transform.localPosition;// this.gameObject.transform.localPosition;
+           // Vector3 offsetPosOut = outGameObject.transform.localPosition;
+            
             outGameObject.transform.position = inGameObject.transform.position;
+            this.gameObject.transform.localPosition = outGameObject.transform.position - vecPos;
             //outGameObject.transform.parent.position = offsetPosOut;
             attached = true;
         }
@@ -61,7 +63,9 @@ public class MovePieceScript : MonoBehaviour {
 
     float RetrieveDistBetweenPiece(GameObject pieceOne, GameObject pieceTwo)
     {
-        float dist = Math.Abs((float)Math.Sqrt(Math.Pow(pieceOne.transform.position.x - pieceTwo.transform.position.x, 2) + Math.Pow(pieceOne.transform.position.y - pieceTwo.transform.position.y, 2) + Math.Pow(pieceOne.transform.position.z - pieceTwo.transform.position.z, 2)));
+        GameObject inPieceTwo = FindingHierarchy.FindComponentInChildWithTag(pieceTwo, "In");
+        GameObject outPieceOne = FindingHierarchy.FindComponentInChildWithTag(pieceOne, "Out");
+        float dist = Math.Abs((float)Math.Sqrt(Math.Pow(outPieceOne.transform.position.x - inPieceTwo.transform.position.x, 2) + Math.Pow(outPieceOne.transform.position.y - inPieceTwo.transform.position.y, 2) + Math.Pow(outPieceOne.transform.position.z - inPieceTwo.transform.position.z, 2)));
 
         return dist;
     }
@@ -80,6 +84,7 @@ public class MovePieceScript : MonoBehaviour {
 
                 if (currentDist < nearest)
                 {
+                    nearest = currentDist;
                     result = listPieceInWorld[i];
                 }
             }
