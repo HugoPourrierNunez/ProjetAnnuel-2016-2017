@@ -5,15 +5,15 @@ using UnityEngine;
 public class PlatformManagerScript : MonoBehaviour {
 
     [SerializeField]
-    PieceScript prefab;
+    PlatformScript prefab;
 
-    List<PieceScript> allPieces = new List<PieceScript>();
+    List<PlatformScript> allPlatform = new List<PlatformScript>();
 
     [SerializeField]
     float timeDoubleClick = .2f;
 
     [SerializeField]
-    int nbMaxPieces = 100;
+    int nbMaxPlatform = 10;
 
     [SerializeField]
     Camera worlCamera;
@@ -21,20 +21,28 @@ public class PlatformManagerScript : MonoBehaviour {
     [SerializeField]
     MeshCollider spawnColliderQuad;
 
+    [SerializeField]
+    public float distanceClose=0.4f;
+
     float doubleClickStart = 0;
 
-    PieceScript pieceSpawning = null;
+    bool buttonDown=false;
+
+    PlatformScript platformSpawning = null;
+
+    PlatformScript platformDragging = null;
 
     // Use this for initialization
     void Start () {
         Debug.Log("start");
 
-        for(int i=0;i<this.nbMaxPieces;i++)
+        for(int i=0;i<this.nbMaxPlatform; i++)
         {
-            var p = (PieceScript)Instantiate(prefab);
+            var p = Instantiate(prefab);
             p.gameObject.SetActive(false);
+            p.setPlatformManager(this);
             p.transform.parent = transform;
-            allPieces.Add(p);
+            allPlatform.Add(p);
         }
         
     }
@@ -42,7 +50,7 @@ public class PlatformManagerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if(pieceSpawning!=null)
+        if(platformSpawning != null)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -50,18 +58,46 @@ public class PlatformManagerScript : MonoBehaviour {
 
             if (spawnColliderQuad.Raycast(ray, out info, 1000))
             {
-                pieceSpawning.transform.localScale = new Vector3(Mathf.Abs(info.point.x - pieceSpawning.transform.position.x)*2, pieceSpawning.transform.localScale.y, pieceSpawning.transform.localScale.z);
+                platformSpawning.getCube().transform.localScale = new Vector3(Mathf.Abs(info.point.x - platformSpawning.transform.position.x)*2, platformSpawning.transform.localScale.y, platformSpawning.transform.localScale.z);
+
+                /*float diffX = Mathf.Abs(info.point.x - platformSpawning.transform.position.x)/2;
+                float diffY = Mathf.Abs(info.point.y - platformSpawning.transform.position.y)/2;
+                
+                platformSpawning.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Rad2Deg*Mathf.Asin(diffY / diffX));*/
+
+                platformSpawning.positionInOut();
             }
 
             if (Input.GetMouseButtonUp(0))
             {
-                pieceSpawning = null;
+                if(platformSpawning!=null)
+                {
+                    platformSpawning.positionInOut();
+                    platformSpawning = null;
+                }
             }
         }
         else
         {
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                {
+                    if (hit.collider.gameObject.tag == "Piece")
+                    {
+                        platformDragging = findPlatformScriptByCubeGO(hit.collider.gameObject);
+                        if (platformDragging.isClipped())
+                            platformDragging = null;
+                    }
+                }
+            }
+
             if (Input.GetMouseButtonUp(0))
             {
+
                 if ((Time.time - doubleClickStart) < timeDoubleClick)
                 {
                     this.OnDoubleClick();
@@ -69,8 +105,30 @@ public class PlatformManagerScript : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log("click");
                     doubleClickStart = Time.time;
+                }
+                
+                platformDragging = null;
+                
+            }
+
+            if (platformDragging!=null)
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                RaycastHit info;
+
+                if (spawnColliderQuad.Raycast(ray, out info, 1000))
+                {
+                    if (info.point.y > 0)
+                    {
+                        platformDragging.transform.position = info.point;
+                        if (DetectNearestPieceAndAttach(platformDragging))
+                        {
+                            platformDragging.setClipped(true);
+                            platformDragging = null;
+                        }
+                    }
                 }
             }
         }
@@ -78,14 +136,40 @@ public class PlatformManagerScript : MonoBehaviour {
 
     }
 
-    public PieceScript getPlatform()
+    public PlatformScript findPlatformScriptByGO(GameObject go)
     {
-        for (int i = 0; i < nbMaxPieces; i++)
+        for(int i=0;i< nbMaxPlatform; i++)
         {
-            if (!allPieces[i].gameObject.activeInHierarchy)
+            if(allPlatform[i].gameObject.activeInHierarchy)
             {
-                allPieces[i].gameObject.SetActive(true);
-                return allPieces[i];
+                if (allPlatform[i].gameObject == go)
+                    return allPlatform[i];
+            }
+        }
+        return null;
+    }
+
+    public PlatformScript findPlatformScriptByCubeGO(GameObject go)
+    {
+        for (int i = 0; i < nbMaxPlatform; i++)
+        {
+            if (allPlatform[i].gameObject.activeInHierarchy)
+            {
+                if (allPlatform[i].getCube() == go)
+                    return allPlatform[i];
+            }
+        }
+        return null;
+    }
+
+    public PlatformScript getPlatform()
+    {
+        for (int i = 0; i < nbMaxPlatform; i++)
+        {
+            if (!allPlatform[i].gameObject.activeInHierarchy)
+            {
+                allPlatform[i].gameObject.SetActive(true);
+                return allPlatform[i];
             }
         }
         return null;
@@ -94,7 +178,6 @@ public class PlatformManagerScript : MonoBehaviour {
 
     void OnDoubleClick()
     {
-        Debug.Log("Double Clicked!");
         var p = this.getPlatform();
         if(p!=null)
         {
@@ -112,8 +195,56 @@ public class PlatformManagerScript : MonoBehaviour {
                 }
 
                 p.transform.position = info.point;
-                pieceSpawning = p;
+                platformSpawning = p;
             }
         }
     }
+
+
+    float RetrieveDistBetweenPiece(PlatformScript pieceOne, PlatformScript pieceTwo)
+    {
+        GameObject inPieceTwo = pieceTwo.getGoIn();
+        GameObject outPieceOne = pieceOne.getGoOut();
+        return Mathf.Abs((float)Mathf.Sqrt(Mathf.Pow(outPieceOne.transform.position.x - inPieceTwo.transform.position.x, 2) + Mathf.Pow(outPieceOne.transform.position.y - inPieceTwo.transform.position.y, 2) + Mathf.Pow(outPieceOne.transform.position.z - inPieceTwo.transform.position.z, 2)));
+
+    }
+
+    public bool DetectNearestPieceAndAttach(PlatformScript platform)
+    {
+        PlatformScript nearestPlatform = null;
+        float nearest = 10000000f;
+
+        for (int i = 0; i < nbMaxPlatform; i++)
+        {
+            if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i]!= platform)
+            {
+                float currentDist = RetrieveDistBetweenPiece(platform, allPlatform[i]);
+
+                if (currentDist < nearest)
+                {
+                    nearest = currentDist;
+                    nearestPlatform = allPlatform[i];
+                }
+            }
+        }
+
+
+        if(nearestPlatform != null)
+        {
+            if (nearest < distanceClose)
+            {
+
+                GameObject inGameObject = nearestPlatform.getGoIn();
+                GameObject outGameObject = platform.getGoOut();
+
+                Vector3 vecPos = outGameObject.transform.localPosition;
+
+                outGameObject.transform.position = inGameObject.transform.position;
+                inGameObject.transform.localPosition = outGameObject.transform.position - vecPos;
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
