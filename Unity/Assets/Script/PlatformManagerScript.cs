@@ -240,7 +240,7 @@ public class PlatformManagerScript : MonoBehaviour {
                 Vector3 vecPos = outGameObject.transform.localPosition;
 
                 outGameObject.transform.position = inGameObject.transform.position;
-                inGameObject.transform.localPosition = outGameObject.transform.position - vecPos;
+                platform.transform.localPosition = outGameObject.transform.position - vecPos;
                 return true;
             }
         }
