@@ -27,11 +27,14 @@ public class PlatformManagerScript : MonoBehaviour {
     [SerializeField]
     public float distanceClose=0.4f;
 
-    float doubleClickStart = 0;
+    float doubleLeftClickStart = 0;
+    float doubleRightClickStart = 0;
 
     bool buttonDown=false;
 
     PlatformScript platformSpawning = null;
+
+    PlatformScript platformPointing = null;
 
     PlatformScript platformDragging = null;
 
@@ -108,46 +111,81 @@ public class PlatformManagerScript : MonoBehaviour {
         }
         else
         {
-
-            if (Input.GetMouseButtonDown(0))
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            spawnColliderQuad.gameObject.SetActive(false);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                if (hit.collider.gameObject.tag == "Piece")
                 {
-                    if (hit.collider.gameObject.tag == "Piece")
-                    {
-                        platformDragging = findPlatformScriptByCubeGO(hit.collider.gameObject);
-                        if (platformDragging.hasAPlatform())
-                            platformDragging = null;
-                    }
+                    if (platformPointing != null)
+                        platformPointing.select(false);
+                    platformPointing = findPlatformScriptByCubeGO(hit.collider.gameObject);
+                    platformPointing.select(true);
+                }
+            }
+            else if (platformPointing != null)
+            {
+                platformPointing.select(false);
+                platformPointing = null;
+                platformDragging = null;
+            }
+            spawnColliderQuad.gameObject.SetActive(true);
+
+            if (Input.GetMouseButtonDown(0) && platformPointing != null)
+            {
+
+                platformDragging = platformPointing;
+                if (platformDragging.hasAPlatform())
+                {
+                    //empeche de bouger
+                    platformDragging = null;
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            else if (Input.GetMouseButtonUp(0))
             {
 
-                if ((Time.time - doubleClickStart) < timeDoubleClick)
+                if ((Time.time - doubleLeftClickStart) < timeDoubleClick)
                 {
                     this.OnDoubleClick();
-                    doubleClickStart = -1;
+                    doubleLeftClickStart = -1;
                 }
                 else
                 {
-                    doubleClickStart = Time.time;
+                    doubleLeftClickStart = Time.time;
                 }
                 
                 platformDragging = null;
                 
             }
 
+            else if (Input.GetMouseButtonUp(1) && platformPointing!=null)
+            {
+                //clic et doule clic right 
+
+                if ((Time.time - doubleRightClickStart) < timeDoubleClick)
+                {
+                    //double clickRight
+
+                    platformPointing.unactive();
+                    doubleRightClickStart = -1;
+                }
+                else
+                {
+                    doubleRightClickStart = Time.time;
+                }
+
+                platformPointing = null;
+            }
+
             if (platformDragging!=null)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 RaycastHit info;
 
-                if (spawnColliderQuad.Raycast(ray, out info, 1000))
+                if (spawnColliderQuad.Raycast(ray2, out info, 1000))
                 {
                     if (info.point.y > 0)
                     {
@@ -282,7 +320,6 @@ public class PlatformManagerScript : MonoBehaviour {
                 //a verifier
                 if(result)
                 {
-                    Debug.Log("Test1");
                     GameObject inGameObject = nearestPlatform.getGoInMarker();
                     GameObject outGameObject = platform.getGoOutMarker();
 
@@ -297,7 +334,6 @@ public class PlatformManagerScript : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log("Test2");
                     GameObject inGameObject = platform.getGoInMarker();
                     GameObject outGameObject = nearestPlatform.getGoOutMarker();
 

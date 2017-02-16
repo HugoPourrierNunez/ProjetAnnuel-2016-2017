@@ -13,10 +13,54 @@ public class PlatformScript : MonoBehaviour {
     [SerializeField]
     Transform cube;
 
+    [SerializeField]
+    Renderer cubeRenderer;
+
+
+    [SerializeField]
+    Material selectedCubeMaterial;
+
     PlatformManagerScript platformManager;
+    Material cubeMaterial = null;
 
     PlatformScript platformIn=null;
     PlatformScript platformOut=null;
+
+    void Start()
+    {
+        cubeMaterial = cubeRenderer.material;
+    }
+
+    public void select(bool isSelected)
+    {
+        if(isSelected)
+        {
+            cubeRenderer.material = selectedCubeMaterial;
+        }
+        else
+        {
+            cubeRenderer.material = cubeMaterial;
+        }
+    }
+
+    public void unactive()
+    {
+
+        gameObject.SetActive(false);
+
+        if (getPlatformIn())
+            getPlatformIn().setPlatformOut(null);
+        if (getPlatformOut())
+            getPlatformOut().setPlatformIn(null);
+
+        setPlatformIn(null);
+        setPlatformOut(null);
+
+        cube.transform.localScale = new Vector3(1, cube.transform.localScale.y, cube.transform.localScale.z);
+        transform.localRotation = new Quaternion();
+
+        positionInOut();
+    }
 
     public void setPlatformManager(PlatformManagerScript manager)
     {
