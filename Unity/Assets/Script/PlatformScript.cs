@@ -43,19 +43,52 @@ public class PlatformScript : MonoBehaviour {
         return (platformOut!= null);
     }
 
-    public bool hasPlatform()
+    public bool hasAPlatform()
     {
         return (hasPlatformIn() || hasPlatformOut());
+    }
+
+    public bool hasPlatforms()
+    {
+        return (hasPlatformIn() && hasPlatformOut());
     }
 
     public void setPlatformIn(PlatformScript platform)
     {
         platformIn=platform;
+        if (platformIn == null)
+            showMarkerIn();
+        else
+            hideMarkerIn();
     }
 
     public void setPlatformOut(PlatformScript platform)
     {
         platformOut = platform;
+        if (platformOut == null)
+            showMarkerOut();
+        else
+            hideMarkerOut();
+    }
+
+    public void showMarkerIn()
+    {
+        goInMarker.SetActive(true);
+    }
+
+    public void hideMarkerIn()
+    {
+        goInMarker.SetActive(false);
+    }
+
+    public void showMarkerOut()
+    {
+        goOutMarker.SetActive(true);
+    }
+
+    public void hideMarkerOut()
+    {
+        goOutMarker.SetActive(false);
     }
 
     public GameObject getGoInMarker()

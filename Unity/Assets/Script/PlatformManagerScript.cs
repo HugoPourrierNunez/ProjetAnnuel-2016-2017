@@ -118,7 +118,7 @@ public class PlatformManagerScript : MonoBehaviour {
                     if (hit.collider.gameObject.tag == "Piece")
                     {
                         platformDragging = findPlatformScriptByCubeGO(hit.collider.gameObject);
-                        if (platformDragging.hasPlatform())
+                        if (platformDragging.hasAPlatform())
                             platformDragging = null;
                     }
                 }
@@ -261,7 +261,7 @@ public class PlatformManagerScript : MonoBehaviour {
 
         for (int i = 0; i < nbMaxPlatform; i++)
         {
-            if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i]!= platform && !(allPlatform[i].hasPlatformIn() && allPlatform[i].hasPlatformOut()))
+            if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i]!= platform && !allPlatform[i].hasPlatforms())
             {
                 
                 float currentDist = RetrieveDistBetweenPiece(platform, allPlatform[i], out result);
@@ -290,8 +290,8 @@ public class PlatformManagerScript : MonoBehaviour {
 
                     platform.transform.position = platform.transform.position - vecPos;
 
-                    nearestPlatform.setPlatformOut(platform);
-                    platform.setPlatformIn(nearestPlatform);
+                    nearestPlatform.setPlatformIn(platform);
+                    platform.setPlatformOut(nearestPlatform);
                     return true;
 
                 }
@@ -305,8 +305,8 @@ public class PlatformManagerScript : MonoBehaviour {
 
                     platform.transform.position = platform.transform.position + vecPos;
 
-                    nearestPlatform.setPlatformIn(platform);
-                    platform.setPlatformOut(nearestPlatform);
+                    nearestPlatform.setPlatformOut(platform);
+                    platform.setPlatformIn(nearestPlatform);
                     return true;
                 }
             }
