@@ -5,26 +5,62 @@ using UnityEngine;
 public class PlatformScript : MonoBehaviour {
 
     [SerializeField]
-    GameObject goIn;
+    GameObject goInMarker;
 
     [SerializeField]
-    GameObject goOut;
+    GameObject goOutMarker;
 
     [SerializeField]
     Transform cube;
 
     PlatformManagerScript platformManager;
 
-    bool clipped = false;
+    PlatformScript platformIn=null;
+    PlatformScript platformOut=null;
 
     public void setPlatformManager(PlatformManagerScript manager)
     {
         platformManager = manager;
     }
 
-    public GameObject getGoIn()
+    public PlatformScript getPlatformIn()
     {
-        return goIn;
+        return platformIn;
+    }
+
+    public PlatformScript getPlatformOut()
+    {
+        return platformOut;
+    }
+
+    public bool hasPlatformIn()
+    {
+        return (platformIn != null);
+    }
+
+    public bool hasPlatformOut()
+    {
+        return (platformOut!= null);
+    }
+
+    public bool hasPlatform()
+    {
+        return (hasPlatformIn() || hasPlatformOut());
+    }
+
+    public void setPlatformIn(PlatformScript platform)
+    {
+        platformIn=platform;
+    }
+
+    public void setPlatformOut(PlatformScript platform)
+    {
+        platformOut = platform;
+    }
+
+    public GameObject getGoInMarker()
+    {
+        return goInMarker;
     }
 
     public GameObject getCube()
@@ -32,25 +68,15 @@ public class PlatformScript : MonoBehaviour {
         return cube.gameObject;
     }
 
-    public GameObject getGoOut()
+    public GameObject getGoOutMarker()
     {
-        return goOut;
-    }
-
-    public bool isClipped()
-    {
-        return clipped;
-    }
-
-    public void setClipped(bool aClipped)
-    {
-        clipped = aClipped;
+        return goOutMarker;
     }
 
     public void positionInOut()
     {
-        goIn.transform.localPosition = new Vector3(cube.localScale.x/2, goIn.transform.localPosition.y, goIn.transform.localPosition.z);
-        goOut.transform.localPosition = new Vector3(-cube.localScale.x / 2, goOut.transform.localPosition.y, goOut.transform.localPosition.z);
+        goInMarker.transform.localPosition = new Vector3(cube.localScale.x/2, goInMarker.transform.localPosition.y, goInMarker.transform.localPosition.z);
+        goOutMarker.transform.localPosition = new Vector3(-cube.localScale.x / 2, goOutMarker.transform.localPosition.y, goOutMarker.transform.localPosition.z);
     }
 
 
