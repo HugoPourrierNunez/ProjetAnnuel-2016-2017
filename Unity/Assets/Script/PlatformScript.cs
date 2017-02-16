@@ -45,9 +45,18 @@ public class PlatformScript : MonoBehaviour {
 
     public void unactive()
     {
-
         gameObject.SetActive(false);
 
+        unclip();
+
+        cube.transform.localScale = new Vector3(1, cube.transform.localScale.y, cube.transform.localScale.z);
+        transform.localRotation = new Quaternion();
+
+        positionInOut();
+    }
+
+    public void unclip()
+    {
         if (getPlatformIn())
             getPlatformIn().setPlatformOut(null);
         if (getPlatformOut())
@@ -55,11 +64,6 @@ public class PlatformScript : MonoBehaviour {
 
         setPlatformIn(null);
         setPlatformOut(null);
-
-        cube.transform.localScale = new Vector3(1, cube.transform.localScale.y, cube.transform.localScale.z);
-        transform.localRotation = new Quaternion();
-
-        positionInOut();
     }
 
     public void setPlatformManager(PlatformManagerScript manager)

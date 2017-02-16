@@ -38,6 +38,8 @@ public class PlatformManagerScript : MonoBehaviour {
 
     PlatformScript platformDragging = null;
 
+    bool canClip = false;
+
     // Use this for initialization
     void Start () {
         Debug.Log("start");
@@ -134,9 +136,19 @@ public class PlatformManagerScript : MonoBehaviour {
 
             if (Input.GetMouseButtonDown(0) && platformPointing != null)
             {
-
+                canClip = true;
                 platformDragging = platformPointing;
                 if (platformDragging.hasAPlatform())
+                {
+                    //empeche de bouger
+                    platformDragging = null;
+                }
+            }
+            else if (Input.GetMouseButtonDown(1) && platformPointing != null)
+            {
+                canClip = false;
+                platformDragging = platformPointing;
+                if (!platformDragging.hasAPlatform())
                 {
                     //empeche de bouger
                     platformDragging = null;
@@ -146,7 +158,7 @@ public class PlatformManagerScript : MonoBehaviour {
             else if (Input.GetMouseButtonUp(0))
             {
 
-                if ((Time.time - doubleLeftClickStart) < timeDoubleClick)
+                if ((Time.time - doubleLeftClickStart) < timeDoubleClick && platformPointing==null)
                 {
                     this.OnDoubleClick();
                     doubleLeftClickStart = -1;
@@ -173,16 +185,17 @@ public class PlatformManagerScript : MonoBehaviour {
                 }
                 else
                 {
+                    platformPointing.unclip();
                     doubleRightClickStart = Time.time;
                 }
 
+                platformDragging = null;
                 platformPointing = null;
             }
 
             if (platformDragging!=null)
             {
                 Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
-
                 RaycastHit info;
 
                 if (spawnColliderQuad.Raycast(ray2, out info, 1000))
@@ -190,9 +203,12 @@ public class PlatformManagerScript : MonoBehaviour {
                     if (info.point.y > 0)
                     {
                         platformDragging.transform.position = info.point;
-                        if (DetectNearestPieceAndAttach(platformDragging))
+                        if(canClip)
                         {
-                            platformDragging = null;
+                            if (DetectNearestPieceAndAttach(platformDragging))
+                            {
+                                platformDragging = null;
+                            }
                         }
                     }
                 }
