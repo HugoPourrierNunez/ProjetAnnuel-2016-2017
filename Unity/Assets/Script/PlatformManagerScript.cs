@@ -13,6 +13,9 @@ public class PlatformManagerScript : MonoBehaviour {
     float timeDoubleClick = .2f;
 
     [SerializeField]
+    PlatformScript start;
+
+    [SerializeField]
     int nbMaxPlatform = 10;
 
     [SerializeField]
@@ -36,7 +39,9 @@ public class PlatformManagerScript : MonoBehaviour {
     void Start () {
         Debug.Log("start");
 
-        for(int i=0;i<this.nbMaxPlatform; i++)
+        allPlatform.Add(start);
+        start.setPlatformOut(start);
+        for (int i=1;i<this.nbMaxPlatform; i++)
         {
             var p = Instantiate(prefab);
             p.gameObject.SetActive(false);
@@ -94,7 +99,7 @@ public class PlatformManagerScript : MonoBehaviour {
 
             if (Input.GetMouseButtonUp(0))
             {
-                if(platformSpawning!=null)
+                if(platformSpawning!=null && platformSpawning.getCube().transform.localScale.x>1)
                 {
                     platformSpawning.positionInOut();
                     platformSpawning = null;
@@ -113,7 +118,7 @@ public class PlatformManagerScript : MonoBehaviour {
                     if (hit.collider.gameObject.tag == "Piece")
                     {
                         platformDragging = findPlatformScriptByCubeGO(hit.collider.gameObject);
-                        if (platformDragging.isClipped())
+                        if (platformDragging.hasAPlatform())
                             platformDragging = null;
                     }
                 }
@@ -149,7 +154,6 @@ public class PlatformManagerScript : MonoBehaviour {
                         platformDragging.transform.position = info.point;
                         if (DetectNearestPieceAndAttach(platformDragging))
                         {
-                            platformDragging.setClipped(true);
                             platformDragging = null;
                         }
                     }
@@ -225,24 +229,42 @@ public class PlatformManagerScript : MonoBehaviour {
     }
 
 
-    float RetrieveDistBetweenPiece(PlatformScript pieceOne, PlatformScript pieceTwo)
+    float RetrieveDistBetweenPiece(PlatformScript pieceOne, PlatformScript pieceTwo, out bool result)
     {
-        GameObject inPieceTwo = pieceTwo.getGoIn();
-        GameObject outPieceOne = pieceOne.getGoOut();
-        return Mathf.Abs((float)Mathf.Sqrt(Mathf.Pow(outPieceOne.transform.position.x - inPieceTwo.transform.position.x, 2) + Mathf.Pow(outPieceOne.transform.position.y - inPieceTwo.transform.position.y, 2) + Mathf.Pow(outPieceOne.transform.position.z - inPieceTwo.transform.position.z, 2)));
+        result = true;
+        float d1 = Vector3.Distance(pieceTwo.getGoInMarker().transform.position, pieceOne.getGoOutMarker().transform.position);
+        float d2 = Vector3.Distance(pieceOne.getGoInMarker().transform.position, pieceTwo.getGoOutMarker().transform.position);
+        /*if (!pieceTwo.hasPlatformOut() && pieceTwo.hasPlatformIn())
+        {
+            Debug.Log("mindist1");
+            result = false;
+            return d1;
+        }
+        else if (pieceTwo.hasPlatformOut() && !pieceTwo.hasPlatformIn())
+        {
+            Debug.Log("mindist2");
+            result = true;
+            return d2;
+        }*/
 
+        if (d1 < d2)
+            return d1;    
+        result = false;
+        return d2;
     }
 
     public bool DetectNearestPieceAndAttach(PlatformScript platform)
     {
         PlatformScript nearestPlatform = null;
         float nearest = 10000000f;
+        bool result = true;
 
         for (int i = 0; i < nbMaxPlatform; i++)
         {
-            if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i]!= platform)
+            if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i]!= platform && !allPlatform[i].hasPlatforms())
             {
-                float currentDist = RetrieveDistBetweenPiece(platform, allPlatform[i]);
+                
+                float currentDist = RetrieveDistBetweenPiece(platform, allPlatform[i], out result);
 
                 if (currentDist < nearest)
                 {
@@ -257,15 +279,36 @@ public class PlatformManagerScript : MonoBehaviour {
         {
             if (nearest < distanceClose)
             {
+                //a verifier
+                if(result)
+                {
+                    Debug.Log("Test1");
+                    GameObject inGameObject = nearestPlatform.getGoInMarker();
+                    GameObject outGameObject = platform.getGoOutMarker();
 
-                GameObject inGameObject = nearestPlatform.getGoIn();
-                GameObject outGameObject = platform.getGoOut();
+                    Vector3 vecPos = outGameObject.transform.position - inGameObject.transform.position;
 
-                Vector3 vecPos = outGameObject.transform.localPosition;
+                    platform.transform.position = platform.transform.position - vecPos;
 
-                outGameObject.transform.position = inGameObject.transform.position;
-                platform.transform.localPosition = outGameObject.transform.position - vecPos;
-                return true;
+                    nearestPlatform.setPlatformIn(platform);
+                    platform.setPlatformOut(nearestPlatform);
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("Test2");
+                    GameObject inGameObject = platform.getGoInMarker();
+                    GameObject outGameObject = nearestPlatform.getGoOutMarker();
+
+                    Vector3 vecPos = outGameObject.transform.position - inGameObject.transform.position;
+
+                    platform.transform.position = platform.transform.position + vecPos;
+
+                    nearestPlatform.setPlatformOut(platform);
+                    platform.setPlatformIn(nearestPlatform);
+                    return true;
+                }
             }
         }
         return false;
