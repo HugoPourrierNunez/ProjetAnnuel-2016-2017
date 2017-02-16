@@ -58,14 +58,38 @@ public class PlatformManagerScript : MonoBehaviour {
 
             if (spawnColliderQuad.Raycast(ray, out info, 1000))
             {
-                platformSpawning.getCube().transform.localScale = new Vector3(Mathf.Abs(info.point.x - platformSpawning.transform.position.x)*2, platformSpawning.transform.localScale.y, platformSpawning.transform.localScale.z);
+                float diffX = info.point.x - platformSpawning.transform.position.x;
+                float diffY = info.point.y - platformSpawning.transform.position.y;
 
-                /*float diffX = Mathf.Abs(info.point.x - platformSpawning.transform.position.x)/2;
-                float diffY = Mathf.Abs(info.point.y - platformSpawning.transform.position.y)/2;
-                
-                platformSpawning.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Rad2Deg*Mathf.Asin(diffY / diffX));*/
+                float distance = Mathf.Sqrt(diffX* diffX + diffY* diffY);
 
-                platformSpawning.positionInOut();
+                platformSpawning.getCube().transform.localScale = new Vector3(distance*2, platformSpawning.transform.localScale.y, platformSpawning.transform.localScale.z);
+
+                float angle = Mathf.Rad2Deg * Mathf.Asin(Mathf.Abs(diffY) / Mathf.Abs(distance));
+
+                if (diffX>0)
+                {
+                    if(diffY<0)
+                    {
+                        angle = -angle;
+                    }
+                }
+                else
+                {
+                    if (diffY > 0)
+                    {
+                        angle = 180 - angle;
+                    }
+                    else
+                    {
+                        angle = -180+angle;
+                    }
+                }
+                if(!System.Single.IsNaN(angle))
+                {
+                    platformSpawning.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, angle);
+                    platformSpawning.positionInOut();
+                }
             }
 
             if (Input.GetMouseButtonUp(0))

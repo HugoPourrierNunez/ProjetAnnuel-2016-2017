@@ -49,8 +49,8 @@ public class PlatformScript : MonoBehaviour {
 
     public void positionInOut()
     {
-        goIn.transform.position = new Vector3(transform.position.x+cube.localScale.x/2, transform.position.y, transform.position.z);
-        goOut.transform.position = new Vector3(transform.position.x -cube.localScale.x / 2, transform.position.y, transform.position.z);
+        goIn.transform.localPosition = new Vector3(cube.localScale.x/2, goIn.transform.localPosition.y, goIn.transform.localPosition.z);
+        goOut.transform.localPosition = new Vector3(-cube.localScale.x / 2, goOut.transform.localPosition.y, goOut.transform.localPosition.z);
     }
 
 
