@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Transform ballTransform;
 
+    [SerializeField]
+    GameObject panelObject;
+
     //Gamestate : 1 (edit), 2 (play), 3 (win)
     private int gamestate;
 
@@ -92,5 +95,21 @@ public class GameManager : MonoBehaviour
     public void GoToMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        if (gamestate == 2) Time.timeScale = 1;
+    }
+
+    void Update()
+    {
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            panelObject.SetActive(true);
+            if (gamestate == 2) Time.timeScale = 0;
+        }
+    }
+
+    public void Resume()
+    {
+        panelObject.SetActive(false);
+        if (gamestate == 2) Time.timeScale = 1;        
     }
 }
