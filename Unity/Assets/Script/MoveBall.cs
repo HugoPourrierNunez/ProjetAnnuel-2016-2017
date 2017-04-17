@@ -29,6 +29,6 @@ public class MoveBall : MonoBehaviour
                     rigidBall.AddForce(force, ForceMode.Force);
                 }
             }
-        }
+                }
     }
 }

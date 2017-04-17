@@ -11,7 +11,7 @@ public class GroundDetection : MonoBehaviour
         isGrounded = false;
     }
 
-    void OnTriggerEnter()
+    void OnTriggerStay()
     {
         isGrounded = true;
     }
