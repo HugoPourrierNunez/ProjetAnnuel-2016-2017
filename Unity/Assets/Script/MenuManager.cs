@@ -24,7 +24,7 @@ public class MenuManager : MonoBehaviour
     {
         playBtn.gameObject.SetActive(false);
         exitBtn.gameObject.SetActive(false);
-
+        Debug.Log("CA PASSE");
         anim.SetBool("chooseLvl", true);
     }
 
