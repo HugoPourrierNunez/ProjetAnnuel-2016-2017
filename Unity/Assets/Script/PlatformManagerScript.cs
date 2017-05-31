@@ -25,12 +25,21 @@ public class PlatformManagerScript : MonoBehaviour {
     MeshCollider spawnColliderQuad;
 
     [SerializeField]
+    GameObject indexL;
+
+    [SerializeField]
+    GameObject indexR;
+
+    [SerializeField]
     public float distanceClose=0.4f;
 
     float doubleLeftClickStart = 0;
     float doubleRightClickStart = 0;
 
     bool buttonDown=false;
+
+    private bool activeLeftPinch = false;
+    private bool activeRightPinch = false;
 
     PlatformScript platformSpawning = null;
 
@@ -110,6 +119,15 @@ public class PlatformManagerScript : MonoBehaviour {
                     platformSpawning = null;
                 }
             }
+
+            if (this.activeLeftPinch == true && this.activeRightPinch == true)
+            {
+                if (platformSpawning != null && platformSpawning.getCube().transform.localScale.x > 1)
+                {
+                    platformSpawning.positionInOut();
+                    platformSpawning = null;
+                }
+            }
         }
         else
         {
@@ -170,6 +188,12 @@ public class PlatformManagerScript : MonoBehaviour {
                 
                 platformDragging = null;
                 
+            }
+
+            else if (this.activeLeftPinch == true && this.activeRightPinch == true)
+            {
+                Debug.Log("Hello 2 pinch !");
+                this.OnDoubleClick();
             }
 
             else if (Input.GetMouseButtonUp(1) && platformPointing!=null)
@@ -257,28 +281,54 @@ public class PlatformManagerScript : MonoBehaviour {
         return null;
     }
 
+    public void LeftPinchActivate()
+    {
+        Debug.Log("Activate Left Pinch");
+        this.activeLeftPinch = true;
+    }
 
-    void OnDoubleClick()
+    public void LeftPinchDeactivate()
+    {
+        Debug.Log("DeActivate Left Pinch");
+        this.activeLeftPinch = false;
+    }
+
+    public void RightPinchActivate()
+    {
+        Debug.Log("Activate Right Pinch");
+        this.activeRightPinch = true;
+    }
+
+    public void RightPinchDeactivate()
+    {
+        Debug.Log("DeActivate Right Pinch");
+        this.activeRightPinch = false;
+    }
+
+    public void OnDoubleClick()
     {
         var p = this.getPlatform();
         if(p!=null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            RaycastHit info;
+            //RaycastHit info;
 
-            if (spawnColliderQuad.Raycast(ray, out info, 1000))
-            {
+            //if (spawnColliderQuad.Raycast(ray, out info, 1000))
+            //{
                 // get the hit point:
-                if(info.point.y<0)
-                {
-                    p.gameObject.SetActive(false);
-                    return;
-                }
+              //  if(info.point.y<0)
+                //{
+                    p.gameObject.SetActive(true);
+                    //return;
+                //}
 
-                p.transform.position = info.point;
+                    Vector3 averageIndex = new Vector3((this.indexL.transform.position.x + this.indexR.transform.position.x) / 2,
+                                                        (this.indexL.transform.position.y + this.indexR.transform.position.y) / 2,
+                                                        (this.indexL.transform.position.z + this.indexR.transform.position.z) / 2);
+                p.transform.position = averageIndex;
                 platformSpawning = p;
-            }
+            //}
         }
     }
 
