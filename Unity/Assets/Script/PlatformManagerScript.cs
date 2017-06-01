@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlatformManagerScript : MonoBehaviour {
 
@@ -32,6 +33,14 @@ public class PlatformManagerScript : MonoBehaviour {
 
     [SerializeField]
     public float distanceClose=0.4f;
+
+    [SerializeField]
+    Text budgetTxt;
+
+    [SerializeField]
+    float totalBudget = 100.0f;
+
+    float usedBudget = 0.0f;
 
     float doubleLeftClickStart = 0;
     float doubleRightClickStart = 0;
@@ -70,7 +79,7 @@ public class PlatformManagerScript : MonoBehaviour {
 
     public bool IsBudgetOver()
     {
-        return false;
+        return (usedBudget > totalBudget);
     }
 
     // Update is called once per frame
@@ -82,12 +91,14 @@ public class PlatformManagerScript : MonoBehaviour {
 
             RaycastHit info;
 
+            float distance = 0;
+
             if (spawnColliderQuad.Raycast(ray, out info, 1000))
             {
                 float diffX = info.point.x - platformSpawning.transform.position.x;
                 float diffY = info.point.y - platformSpawning.transform.position.y;
 
-                float distance = Mathf.Sqrt(diffX* diffX + diffY* diffY);
+                distance = Mathf.Sqrt(diffX* diffX + diffY* diffY);
 
                 platformSpawning.getCube().transform.localScale = new Vector3(distance*2, platformSpawning.transform.localScale.y, platformSpawning.transform.localScale.z);
 
@@ -124,6 +135,8 @@ public class PlatformManagerScript : MonoBehaviour {
                 {
                     platformSpawning.positionInOut();
                     platformSpawning = null;
+                    usedBudget += distance * 2;
+                    budgetTxt.text = (int)usedBudget + " / " + (int)totalBudget;
                 }
             }
 
@@ -215,6 +228,9 @@ public class PlatformManagerScript : MonoBehaviour {
                 if ((Time.time - doubleRightClickStart) < timeDoubleClick)
                 {
                     //double clickRight
+                    var length = platformPointing.gameObject.transform.FindChild("Cube").GetComponent<Collider>().bounds.size;
+                    usedBudget -= (int)Mathf.Sqrt(length[0] * length[0] + length[1] * length[1]);
+                    budgetTxt.text = (int)usedBudget + " / " + (int)totalBudget;
 
                     platformPointing.unactive();
                     doubleRightClickStart = -1;
