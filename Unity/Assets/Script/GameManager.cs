@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Canvas _canvasLose;
 
+    [SerializeField]
+    LevelLock _levelLock;
+
     //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
     private int _gamestate;
 
@@ -47,6 +50,7 @@ public class GameManager : MonoBehaviour
         Save();
         _canvasVictory.gameObject.SetActive(true);
         _gamestate = 4;
+        _levelLock.UnlockLevel(_level);
     }
 
     public void Lose()
@@ -84,7 +88,7 @@ public class GameManager : MonoBehaviour
         return _gamestate;
     }
 
-    public void Redo()
+    public void Retry()
     {
         if (_gamestate == 4)
         {

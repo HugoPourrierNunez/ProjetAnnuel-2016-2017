@@ -135,12 +135,12 @@ namespace Leap.Unity
                 transform.SetParent(null, true);
             }
 
-            if (_pinchDetectorA != null && _pinchDetectorA.IsActive &&
+            /*if (_pinchDetectorA != null && _pinchDetectorA.IsActive &&
                 _pinchDetectorB != null && _pinchDetectorB.IsActive)
             {
                 transformDoubleAnchor();
             }
-            else if (_pinchDetectorA != null && _pinchDetectorA.IsActive && this.isCollisioned == true)
+            else */if (_pinchDetectorA != null && _pinchDetectorA.IsActive && this.isCollisioned == true)
             {
                 transformSingleAnchor(_pinchDetectorA);
             }
