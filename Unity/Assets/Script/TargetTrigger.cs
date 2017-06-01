@@ -11,7 +11,7 @@ public class TargetTrigger : MonoBehaviour
     PlatformManagerScript _platformManager;
 
     NopeZoneDetection[] _nopes;
-    bool _nopeCrossed = false;
+    //bool _nopeCrossed = false;
 
     bool _budgetOver = false;
 
@@ -28,18 +28,26 @@ public class TargetTrigger : MonoBehaviour
         {
             if(_nopes[i].IsCrossed())
             {
-                _nopeCrossed = true;
-                break;
+                //_nopeCrossed = true;
+                _hasWon = false;
+                _gameManager.Lose();
+                return;
             }
         }
 
         _budgetOver = _platformManager.IsBudgetOver();
+        if (_budgetOver)
+        {
+            _hasWon = false;
+            _gameManager.Lose();
+            return;
+        }
 
         _gameManager.Win();
         _hasWon = true;
     }
     
-    public bool getHasWon()
+    public bool GetHasWon()
     {
         return _hasWon;
     }

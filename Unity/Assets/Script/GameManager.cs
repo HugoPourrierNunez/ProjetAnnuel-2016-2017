@@ -7,19 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    TargetTrigger target;
-
-    [SerializeField]
-    Animator anim;
-
-    [SerializeField]
     Rigidbody rigidBall;
-
-    [SerializeField]
-    Button playButton;
-
-    [SerializeField]
-    Button editButton;
 
     [SerializeField]
     Transform spawnTransform;
@@ -28,88 +16,95 @@ public class GameManager : MonoBehaviour
     Transform ballTransform;
 
     [SerializeField]
-    GameObject panelObject;
+    Canvas _canvasVictory;
 
-    //Gamestate : 1 (edit), 2 (play), 3 (win)
-    private int gamestate;
+    [SerializeField]
+    Canvas _canvasLose;
+
+    //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
+    private int _gamestate;
+
+    private int _level;
 
     void Start()
     {
         rigidBall.isKinematic = true;
-        gamestate = 1;
+        _gamestate = 0;
     }
 
     public void Win()
     {
-        editButton.gameObject.SetActive(false);
-        playButton.gameObject.SetActive(false);
+        Save();
+        _canvasVictory.gameObject.SetActive(true);
+        _gamestate = 4;
+    }
 
-        anim.SetBool("playMode", false);
-        anim.SetBool("win", true);
-        playButton.gameObject.SetActive(false);
-
-        gamestate = 3;
+    public void Lose()
+    {
+        _canvasLose.gameObject.SetActive(true);
+        _gamestate = 4;
     }
 
     public void Play()
     {
-        playButton.gameObject.SetActive(false);
-        editButton.gameObject.SetActive(true);
-
+        if (_gamestate == 4)
+        {
+            _canvasLose.gameObject.SetActive(false);
+            _canvasVictory.gameObject.SetActive(false);
+        }
         rigidBall.isKinematic = false;
-        anim.SetBool("editMode", false);
-        anim.SetBool("playMode", true);
-
-        gamestate = 2;
+        _gamestate = 3;
     }
 
     public void Edit()
     {
-        editButton.gameObject.SetActive(false);
-        playButton.gameObject.SetActive(true);
-
-        if (anim.GetBool("playMode"))
+        if (_gamestate == 4)
         {
-            anim.SetBool("playMode", false);
+            _canvasLose.gameObject.SetActive(false);
+            _canvasVictory.gameObject.SetActive(false);
         }
-
         rigidBall.isKinematic = true;
-        anim.SetBool("editMode", true);
-
         ballTransform.position = spawnTransform.position;
         ballTransform.rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
-
-        gamestate = 1;
+        _gamestate = 2;
     }
 
     public int getGamestate()
     {
-        return gamestate;
+        return _gamestate;
     }
 
     public void Redo()
     {
-        SceneManager.LoadScene("MainScene");
+        if (_gamestate == 4)
+        {
+            _canvasLose.gameObject.SetActive(false);
+            _canvasVictory.gameObject.SetActive(false);
+        }
     }
 
     public void GoToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
-        if (gamestate == 2) Time.timeScale = 1;
-    }
-
-    void Update()
-    {
-        if(Input.GetKey(KeyCode.Escape))
+        if (_gamestate == 4)
         {
-            panelObject.SetActive(true);
-            if (gamestate == 2) Time.timeScale = 0;
+            _canvasLose.gameObject.SetActive(false);
+            _canvasVictory.gameObject.SetActive(false);
         }
+        _gamestate = 0;
     }
 
-    public void Resume()
+    public void NextLevel()
     {
-        panelObject.SetActive(false);
-        if (gamestate == 2) Time.timeScale = 1;        
+        StartLevel(++_level);
+    }
+
+    public void StartLevel(int level)
+    {
+        Debug.Log("Starting level" + _level);
+    }
+
+    public void Save()
+    {
+        Debug.Log("Save");
     }
 }
