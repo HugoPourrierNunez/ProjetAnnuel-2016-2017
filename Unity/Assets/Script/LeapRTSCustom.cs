@@ -81,10 +81,10 @@ namespace Leap.Unity
             //        Debug.LogWarning("Both Pinch Detectors of the LeapRTS component must be assigned. This component has been disabled.");
             //        enabled = false;
             //      }
-            this._pinchDetectorA = GameObject.Find("LMHeadMountedRig/HandModels/CapsuleHand_L/PinchDector_L").GetComponent<PinchDetector>();
+            //this._pinchDetectorA = GameObject.Find("LMHeadMountedRig/HandModels/CapsuleHand_L/PinchDector_L").GetComponent<PinchDetector>();
 
             Debug.Log("Spawn Detector");
-            this._pinchDetectorB = GameObject.Find("LMHeadMountedRig/HandModels/CapsuleHand_R/PinchDector_R").GetComponent<PinchDetector>();
+            //this._pinchDetectorB = GameObject.Find("LMHeadMountedRig/HandModels/CapsuleHand_R/PinchDector_R").GetComponent<PinchDetector>();
             GameObject pinchControl = new GameObject("RTS Anchor");
             _anchor = pinchControl.transform;
             //transform.parent.transform.position = new Vector3(0f, 0f, 0f);
@@ -101,6 +101,12 @@ namespace Leap.Unity
             }
             _anchor.transform.parent = transform.parent;
             transform.parent = _anchor;
+        }
+
+        public void setPinchDetector(PinchDetector left, PinchDetector right)
+        {
+            _pinchDetectorA = left;
+            _pinchDetectorB = right;
         }
 
         void Update()

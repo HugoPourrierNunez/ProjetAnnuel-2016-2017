@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leap.Unity;
 
 public class SpawnManager : MonoBehaviour {
 
@@ -9,6 +10,12 @@ public class SpawnManager : MonoBehaviour {
 
     [SerializeField]
     GameObject leftPinch;
+
+    [SerializeField]
+    PinchDetector rightPinchDetector;
+
+    [SerializeField]
+    PinchDetector leftPinchDetector;
 
     [SerializeField]
     PlatformPrefabScript prefab;
@@ -30,16 +37,21 @@ public class SpawnManager : MonoBehaviour {
 	void Update () {
         if (isPinchRight && isPinchLeft)
         {
-            if ( spawning == false && Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position) < .02)
+            Debug.Log(Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position));
+            if ( spawning == false && Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position) < .04f)
             {
+                Debug.Log("Double Pinch");
                 spawning = true;
                 go = Instantiate(prefab.gameObject).GetComponent<PlatformPrefabScript>();
+                //LeapRTSCustom aLeapRTSCustom = go.gameObject.GetComponent<LeapRTSCustom>();
+                //aLeapRTSCustom.setPinchDetector(leftPinchDetector, rightPinchDetector);
+
                 go.transform.localPosition = new Vector3(go.transform.localPosition.x, 
                     go.transform.localPosition.y, 
                     go.transform.localPosition.z-(go.getMeshFilter().mesh.bounds.size.z*go.transform.localScale.z));
                 go.transform.position = Vector3.Lerp(rightPinch.transform.position, leftPinch.transform.position, .5f);
                 position = go.transform.position;
-                Debug.Log("Double Pinch");
+               
             }
             if (spawning && go!=null)
             {
@@ -59,11 +71,13 @@ public class SpawnManager : MonoBehaviour {
 
     public void setIsPinchLeft(bool b)
     {
+        Debug.Log("setIsPinchLeft");
         isPinchLeft = b;
     }
 
     public void setIsPinchRight(bool b)
     {
+        Debug.Log("setIsPinchRight");
         isPinchRight = b;
     }
 }
