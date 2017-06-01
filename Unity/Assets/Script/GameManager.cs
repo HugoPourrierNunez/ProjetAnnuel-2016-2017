@@ -105,6 +105,10 @@ public class GameManager : MonoBehaviour
 
     public void Save()
     {
-        Debug.Log("Save");
+        var prevLvl = PlayerPrefs.GetInt("max_level", -1);
+        if(_level > prevLvl)
+        {
+            PlayerPrefs.SetInt("max_level", _level);
+        }
     }
 }
