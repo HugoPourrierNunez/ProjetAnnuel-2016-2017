@@ -5,18 +5,42 @@ using UnityEngine;
 public class TargetTrigger : MonoBehaviour
 {
     [SerializeField]
-    GameManager gameManager;
+    GameManager _gameManager;
 
-    private bool hasWon = false;
+    [SerializeField]
+    PlatformManagerScript _platformManager;
+
+    NopeZoneDetection[] _nopes;
+    bool _nopeCrossed = false;
+
+    bool _budgetOver = false;
+
+    private bool _hasWon = false;
+
+    void Start()
+    {
+        _nopes = FindObjectsOfType<NopeZoneDetection>();
+    }
 
     void OnTriggerEnter(Collider ball)
     {
-        gameManager.Win();
-        hasWon = true;
+        for(int i = 0; i < _nopes.Length; ++i)
+        {
+            if(_nopes[i].IsCrossed())
+            {
+                _nopeCrossed = true;
+                break;
+            }
+        }
+
+        _budgetOver = _platformManager.IsBudgetOver();
+
+        _gameManager.Win();
+        _hasWon = true;
     }
     
     public bool getHasWon()
     {
-        return hasWon;
+        return _hasWon;
     }
 }

@@ -65,6 +65,11 @@ public class PlatformManagerScript : MonoBehaviour {
         }
         budgetTxt.text = (int)usedBudget + " / " + (int)totalBudget;
     }
+
+    public bool IsBudgetOver()
+    {
+        return (usedBudget > totalBudget);
+    }
 	
 	// Update is called once per frame
 	void Update ()
