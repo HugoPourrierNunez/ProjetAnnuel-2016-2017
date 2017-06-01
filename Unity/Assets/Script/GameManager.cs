@@ -28,8 +28,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        var prevLvl = PlayerPrefs.GetInt("max_level", -1);
+        if (prevLvl == -1)
+        {
+            PlayerPrefs.SetInt("max_level", 1);
+        }
         rigidBall.isKinematic = true;
         _gamestate = 0;
+    }
+
+    public int GetLevel()
+    {
+        return _level;
     }
 
     public void Win()
