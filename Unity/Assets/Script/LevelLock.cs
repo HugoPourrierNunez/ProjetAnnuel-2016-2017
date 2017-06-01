@@ -26,4 +26,10 @@ public class LevelLock : MonoBehaviour
         }
 
 	}
+
+    public void UnlockLevel(int level)
+    {
+        _levelsBtn[level - 1].interactable = true;
+        _locks[level - 1].SetActive(false);
+    }
 }
