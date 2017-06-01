@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65554738313952368}
   - component: {fileID: 23455324378246754}
   - component: {fileID: 95485820415610108}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: ElevatorPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}

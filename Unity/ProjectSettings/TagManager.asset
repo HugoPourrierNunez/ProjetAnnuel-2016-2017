@@ -18,12 +18,12 @@ TagManager:
   - 
   - Platform
   - Finger
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - StaticPlatform
+  - NopeZone
+  - Ball
+  - Target
+  - Floor
+  - GroundDetector
   - 
   - 
   - 

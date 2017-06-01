@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65848905523373132}
   - component: {fileID: 23226674775384164}
   - component: {fileID: 95529049988754280}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: ElevateSlidePlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4307455040139914}
   - component: {fileID: 135106331248308958}
   - component: {fileID: 114152879424701398}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: GroundDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 23415739470376534}
   - component: {fileID: 54145346564781800}
   - component: {fileID: 114413304886071384}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: BallTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
