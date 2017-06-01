@@ -43,8 +43,9 @@ public class SpawnManager : MonoBehaviour {
                 Debug.Log("Double Pinch");
                 spawning = true;
                 go = Instantiate(prefab.gameObject).GetComponent<PlatformPrefabScript>();
-                //LeapRTSCustom aLeapRTSCustom = go.gameObject.GetComponent<LeapRTSCustom>();
-                //aLeapRTSCustom.setPinchDetector(leftPinchDetector, rightPinchDetector);
+                LeapRTSCustom aLeapRTSCustom = go.gameObject.GetComponent<LeapRTSCustom>();
+                aLeapRTSCustom.SetSpawnManager(this);
+                aLeapRTSCustom.setPinchDetector(leftPinchDetector, rightPinchDetector);
 
                 go.transform.localPosition = new Vector3(go.transform.localPosition.x, 
                     go.transform.localPosition.y, 
@@ -57,7 +58,7 @@ public class SpawnManager : MonoBehaviour {
             {
                 float distance = Mathf.Abs(rightPinch.transform.position.x - leftPinch.transform.position.x);
                 Debug.Log("distance x" + distance);
-                go.transform.localScale = new Vector3(distance*10, go.transform.localScale.y, go.transform.localScale.z);
+                go.transform.localScale = new Vector3(distance*2, go.transform.localScale.y, go.transform.localScale.z);
                 //go.transform.localPosition = new Vector3(position.x - (go.getMeshFilter().mesh.bounds.size.x * go.transform.localScale.x), go.transform.localPosition.y, go.transform.localPosition.z);
 
             }
@@ -73,6 +74,15 @@ public class SpawnManager : MonoBehaviour {
     {
         Debug.Log("setIsPinchLeft");
         isPinchLeft = b;
+    }
+
+    public GameObject getSpawningGo()
+    {
+        if (go == null)
+        {
+            return null;
+        }
+        return go.gameObject;
     }
 
     public void setIsPinchRight(bool b)

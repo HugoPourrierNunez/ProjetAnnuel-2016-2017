@@ -49,6 +49,8 @@ namespace Leap.Unity
             }
         }
 
+        private SpawnManager spawnManager;
+
         [SerializeField]
         private RotationMethod _oneHandedRotationMethod;
 
@@ -111,6 +113,12 @@ namespace Leap.Unity
 
         void Update()
         {
+
+            if (spawnManager != null && spawnManager.getSpawningGo() != null)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(_toggleGuiState))
             {
                 _showGUI = !_showGUI;
@@ -162,6 +170,11 @@ namespace Leap.Unity
         public void SetCollision(bool b)
         {
             this.isCollisioned = b;
+        }
+
+        public void SetSpawnManager(SpawnManager spManager)
+        {
+            this.spawnManager = spManager;
         }
 
         private void doRotationMethodGUI(ref RotationMethod rotationMethod)
