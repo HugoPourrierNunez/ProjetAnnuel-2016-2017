@@ -40,6 +40,7 @@ public class PlatformManagerScript : MonoBehaviour {
 
     private bool activeLeftPinch = false;
     private bool activeRightPinch = false;
+    private bool objectInCreation = false;
 
     PlatformScript platformSpawning = null;
 
@@ -63,7 +64,6 @@ public class PlatformManagerScript : MonoBehaviour {
             p.transform.parent = transform;
             allPlatform.Add(p);
         }
-        
     }
 	
 	// Update is called once per frame
@@ -190,10 +190,15 @@ public class PlatformManagerScript : MonoBehaviour {
                 
             }
 
-            else if (this.activeLeftPinch == true && this.activeRightPinch == true)
+            else if (this.activeLeftPinch == true && this.activeRightPinch == true && this.objectInCreation == false)
             {
                 Debug.Log("Hello 2 pinch !");
+                this.objectInCreation = true;
                 this.OnDoubleClick();
+            }
+            else if(this.activeLeftPinch == false || this.activeRightPinch == false)
+            {
+                this.objectInCreation = false;
             }
 
             else if (Input.GetMouseButtonUp(1) && platformPointing!=null)
@@ -323,10 +328,8 @@ public class PlatformManagerScript : MonoBehaviour {
                     //return;
                 //}
 
-                    Vector3 averageIndex = new Vector3((this.indexL.transform.position.x + this.indexR.transform.position.x) / 2,
-                                                        (this.indexL.transform.position.y + this.indexR.transform.position.y) / 2,
-                                                        (this.indexL.transform.position.z + this.indexR.transform.position.z) / 2);
-                p.transform.position = averageIndex;
+                    
+                //p.transform.position = averageIndex;
                 platformSpawning = p;
             //}
         }
