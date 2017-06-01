@@ -58,7 +58,7 @@ public class SpawnManager : MonoBehaviour {
             {
                 float distance = Mathf.Abs(rightPinch.transform.position.x - leftPinch.transform.position.x);
                 Debug.Log("distance x" + distance);
-                go.transform.localScale = new Vector3(distance*2, go.transform.localScale.y, go.transform.localScale.z);
+                go.transform.localScale = new Vector3(distance*.5f, go.transform.localScale.y, go.transform.localScale.z);
                 //go.transform.localPosition = new Vector3(position.x - (go.getMeshFilter().mesh.bounds.size.x * go.transform.localScale.x), go.transform.localPosition.y, go.transform.localPosition.z);
 
             }
