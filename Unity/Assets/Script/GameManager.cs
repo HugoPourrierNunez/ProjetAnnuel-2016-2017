@@ -7,13 +7,13 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    Rigidbody rigidBall;
+    Rigidbody[] rigidBall;
 
     [SerializeField]
-    Transform spawnTransform;
+    Transform[] spawnTransform;
 
     [SerializeField]
-    Transform ballTransform;
+    Transform[] ballTransform;
 
     [SerializeField]
     Canvas _canvasVictory;
@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     LevelLock _levelLock;
+
+    [SerializeField]
+    GameObject[] _levels;
 
     //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
     private int _gamestate;
@@ -35,9 +38,18 @@ public class GameManager : MonoBehaviour
         if (prevLvl == -1)
         {
             PlayerPrefs.SetInt("max_level", 1);
-        }
-        rigidBall.isKinematic = true;
+        }        
         _gamestate = 0;
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
+    }
+
+    public void SelectLevel()
+    {
+        _gamestate = 1;
     }
 
     public int GetLevel()
@@ -50,7 +62,10 @@ public class GameManager : MonoBehaviour
         Save();
         _canvasVictory.gameObject.SetActive(true);
         _gamestate = 4;
-        _levelLock.UnlockLevel(_level);
+        if(_level < _levels.Length)
+        {
+            _levelLock.UnlockLevel(_level);
+        }
     }
 
     public void Lose()
@@ -66,7 +81,7 @@ public class GameManager : MonoBehaviour
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        rigidBall.isKinematic = false;
+        rigidBall[_level - 1].isKinematic = false;
         _gamestate = 3;
     }
 
@@ -77,9 +92,9 @@ public class GameManager : MonoBehaviour
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        rigidBall.isKinematic = true;
-        ballTransform.position = spawnTransform.position;
-        ballTransform.rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        rigidBall[_level - 1].isKinematic = true;
+        ballTransform[_level - 1].position = spawnTransform[_level - 1].position;
+        ballTransform[_level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
         _gamestate = 2;
     }
 
@@ -90,15 +105,20 @@ public class GameManager : MonoBehaviour
 
     public void Retry()
     {
+        //Delete all platforms
+        _levels[_level - 1].SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
+        StartLevel(_level);
     }
 
     public void GoToMenu()
     {
+        //Delete all platforms
+        _levels[_level - 1].SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
@@ -109,12 +129,17 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
+        //Delete all platforms
+        _levels[_level - 1].SetActive(false);
         StartLevel(++_level);
     }
 
     public void StartLevel(int level)
     {
-        Debug.Log("Starting level" + _level);
+        _levels[level - 1].SetActive(true);
+        rigidBall[_level - 1].isKinematic = true;
+        ballTransform[_level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        ballTransform[_level - 1].position = spawnTransform[_level - 1].position;
     }
 
     public void Save()

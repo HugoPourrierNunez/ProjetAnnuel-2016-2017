@@ -12,23 +12,12 @@ public class MoveBall : MonoBehaviour
 
     public float speed = 10.0f;
 
-	void Update ()
+    void Update ()
     {
         if (ground.GetIsGrounded())
-        {
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                Vector3 force = new Vector3(speed, 0.0f, 0.0f);
-                rigidBall.AddForce(force, ForceMode.Force);
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                if (rigidBall.velocity.x >= 0)
-                {
-                    Vector3 force = new Vector3(-speed, 0.0f, 0.0f);
-                    rigidBall.AddForce(force, ForceMode.Force);
-                }
-            }
-                }
+        { 
+            Vector3 force = new Vector3(- speed, 0.0f, 0.0f);
+            rigidBall.AddForce(force, ForceMode.Force);
+        }
     }
 }

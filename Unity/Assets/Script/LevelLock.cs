@@ -11,9 +11,6 @@ public class LevelLock : MonoBehaviour
     [SerializeField]
     GameObject[] _locks;
 
-    //[SerializeField]
-    //GameManager _gameManager;
-
     private int _unlockLvl;
 
     void OnEnable ()

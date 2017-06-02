@@ -28,14 +28,13 @@ public class TargetTrigger : MonoBehaviour
         {
             if(_nopes[i].IsCrossed())
             {
-                //_nopeCrossed = true;
                 _hasWon = false;
                 _gameManager.Lose();
                 return;
             }
         }
 
-        _budgetOver = _platformManager.IsBudgetOver();
+        //_budgetOver = _platformManager.IsBudgetOver();
         if (_budgetOver)
         {
             _hasWon = false;

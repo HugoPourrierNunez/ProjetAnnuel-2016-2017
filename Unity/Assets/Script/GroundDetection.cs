@@ -11,12 +11,12 @@ public class GroundDetection : MonoBehaviour
         isGrounded = false;
     }
 
-    void OnTriggerStay()
+    void OnTriggerStay(Collider col)
     {
         isGrounded = true;
     }
 
-    void OnTriggerExit()
+    void OnTriggerExit(Collider col)
     {
         isGrounded = false;
     }
