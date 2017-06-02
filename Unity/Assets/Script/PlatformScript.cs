@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leap.Unity;
 
 public class PlatformScript : MonoBehaviour {
 
@@ -25,6 +26,21 @@ public class PlatformScript : MonoBehaviour {
 
     PlatformScript platformIn=null;
     PlatformScript platformOut=null;
+
+    [SerializeField]
+    LeapRTSCustom leapRTSCustom;
+
+    [SerializeField]
+    PlatformPrefabScript platformPrefabScript;
+
+    public LeapRTSCustom getLeapRTSCustom()
+    {
+        return leapRTSCustom;
+    }
+    public PlatformPrefabScript getPlatformPrefabScript()
+    {
+        return platformPrefabScript;
+    }
 
     void Start()
     {

@@ -18,9 +18,9 @@ public class SpawnManager : MonoBehaviour {
     PinchDetector leftPinchDetector;
 
     [SerializeField]
-    PlatformPrefabScript prefab;
+    PlatformScript prefab;
 
-    private PlatformPrefabScript go = null;
+    private PlatformScript platform = null;
     private Vector3 position;
 
     bool isPinchLeft = false;
@@ -37,38 +37,79 @@ public class SpawnManager : MonoBehaviour {
 	void Update () {
         if (isPinchRight && isPinchLeft)
         {
-            Debug.Log(Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position));
+            //Debug.Log(Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position));
             if ( spawning == false && Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position) < .04f)
             {
                 Debug.Log("Double Pinch");
                 spawning = true;
-                go = Instantiate(prefab.gameObject).GetComponent<PlatformPrefabScript>();
-                LeapRTSCustom aLeapRTSCustom = go.gameObject.GetComponent<LeapRTSCustom>();
+                platform = Instantiate(prefab);
+                LeapRTSCustom aLeapRTSCustom = platform.getLeapRTSCustom();
                 aLeapRTSCustom.SetSpawnManager(this);
                 aLeapRTSCustom.setPinchDetector(leftPinchDetector, rightPinchDetector);
 
-                go.transform.localPosition = new Vector3(go.transform.localPosition.x, 
-                    go.transform.localPosition.y, 
-                    go.transform.localPosition.z-(go.getMeshFilter().mesh.bounds.size.z*go.transform.localScale.z));
-                go.transform.position = Vector3.Lerp(rightPinch.transform.position, leftPinch.transform.position, .5f);
-                position = go.transform.position;
+                platform.transform.localPosition = new Vector3(platform.transform.localPosition.x, 
+                    platform.transform.localPosition.y, 
+                    platform.transform.localPosition.z-(platform.getPlatformPrefabScript().getMeshFilter().mesh.bounds.size.z*platform.transform.localScale.z));
+                platform.transform.position = Vector3.Lerp(rightPinch.transform.position, leftPinch.transform.position, .5f);
+                position = platform.transform.position;
                
             }
-            if (spawning && go!=null)
+            if (spawning && platform!=null)
             {
                 float distance = Mathf.Abs(rightPinch.transform.position.x - leftPinch.transform.position.x);
                 Debug.Log("distance x" + distance);
-                go.transform.localScale = new Vector3(distance*.5f, go.transform.localScale.y, go.transform.localScale.z);
-                //go.transform.localPosition = new Vector3(position.x - (go.getMeshFilter().mesh.bounds.size.x * go.transform.localScale.x), go.transform.localPosition.y, go.transform.localPosition.z);
+                platform.transform.localScale = new Vector3(distance*.5f, platform.transform.localScale.y, platform.transform.localScale.z);
+
+                /*float diffX = rightPinch.transform.position.x - platform.transform.position.x;
+                float diffY = rightPinch.transform.position.y - platform.transform.position.y;
+
+                float distance2 = Mathf.Sqrt(diffX * diffX + diffY * diffY);
+
+                float angle = Mathf.Rad2Deg * Mathf.Asin(Mathf.Abs(diffY) / Mathf.Abs(distance2));
+
+                if (diffX > 0)
+                {
+                    if (diffY < 0)
+                    {
+                        angle = -angle;
+                    }
+                }
+                else
+                {
+                    if (diffY > 0)
+                    {
+                        angle = 180 - angle;
+                    }
+                    else
+                    {
+                        angle = -180 + angle;
+                    }
+                }
+                if (!System.Single.IsNaN(angle))
+                {
+                    platform.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, angle);
+                    platform.positionInOut();
+                }*/
+
+                //platform.transform.localPosition = new Vector3(position.x - (platform.getMeshFilter().mesh.bounds.size.x * platform.transform.localScale.x), platform.transform.localPosition.y, platform.transform.localPosition.z);
 
             }
         }
         else
         {
             spawning = false;
-            go = null;
+            platform = null;
         }
 	}
+
+    public void positionInOut()
+    {
+        GameObject goInMarker = platform.getGoInMarker();
+        GameObject goOutMarker = platform.getGoOutMarker();
+        GameObject cube = platform.getCube();
+        goInMarker.transform.localPosition = new Vector3(cube.transform.localScale.x/2, goInMarker.transform.localPosition.y, goInMarker.transform.localPosition.z);
+        goOutMarker.transform.localPosition = new Vector3(-cube.transform.localScale.x / 2, goOutMarker.transform.localPosition.y, goOutMarker.transform.localPosition.z);
+    }
 
     public void setIsPinchLeft(bool b)
     {
@@ -78,11 +119,11 @@ public class SpawnManager : MonoBehaviour {
 
     public GameObject getSpawningGo()
     {
-        if (go == null)
+        if (platform == null)
         {
             return null;
         }
-        return go.gameObject;
+        return platform.gameObject;
     }
 
     public void setIsPinchRight(bool b)
