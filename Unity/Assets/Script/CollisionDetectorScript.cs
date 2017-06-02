@@ -11,7 +11,6 @@ public class CollisionDetectorScript : MonoBehaviour {
 
     void OnCollisionEnter(Collision other)
     {
-        Debug.Log("Hello");
         if (IsHand(other))
         {
             Debug.Log("Yay! A hand collided!");
@@ -21,11 +20,16 @@ public class CollisionDetectorScript : MonoBehaviour {
 
     void OnCollisionExit(Collision other)
     {
-        Debug.Log("Hello");
         if (IsHand(other))
         {
             Debug.Log("Yay! A hand Exit Collider!");
             leapRts.SetCollision(false);
+        }
+
+        if (other.gameObject.tag == "Trash")
+        {
+            Debug.Log("Go to Trash !");
+            leapRts.SetToTrash(true);
         }
     }
 
