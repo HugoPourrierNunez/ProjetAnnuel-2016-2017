@@ -43,16 +43,15 @@ public class SpawnManager : MonoBehaviour {
                 Debug.Log("Double Pinch");
                 spawning = true;
                 platform = Instantiate(prefab);
-                LeapRTSCustom aLeapRTSCustom = platform.getLeapRTSCustom();
-                aLeapRTSCustom.SetSpawnManager(this);
-                aLeapRTSCustom.setPinchDetector(leftPinchDetector, rightPinchDetector);
 
-                platform.transform.localPosition = new Vector3(platform.transform.localPosition.x, 
+                /*platform.transform.localPosition = new Vector3(platform.transform.localPosition.x, 
                     platform.transform.localPosition.y, 
-                    platform.transform.localPosition.z-(platform.getPlatformPrefabScript().getMeshFilter().mesh.bounds.size.z*platform.transform.localScale.z));
-                platform.transform.position = Vector3.Lerp(rightPinch.transform.position, leftPinch.transform.position, .5f);
+                    platform.transform.localPosition.z-(platform.getPlatformPrefabScript().getMeshFilter().mesh.bounds.size.z*platform.transform.localScale.z));*/
+
+                Vector3 spawnPosition = Vector3.Lerp(rightPinch.transform.position, leftPinch.transform.position, .5f);
+                platform.transform.position = spawnPosition;
                 position = platform.transform.position;
-               
+
             }
             if (spawning && platform!=null)
             {
@@ -60,7 +59,7 @@ public class SpawnManager : MonoBehaviour {
                 Debug.Log("distance x" + distance);
                 platform.transform.localScale = new Vector3(distance*.5f, platform.transform.localScale.y, platform.transform.localScale.z);
 
-                /*float diffX = rightPinch.transform.position.x - platform.transform.position.x;
+                float diffX = rightPinch.transform.position.x - platform.transform.position.x;
                 float diffY = rightPinch.transform.position.y - platform.transform.position.y;
 
                 float distance2 = Mathf.Sqrt(diffX * diffX + diffY * diffY);
@@ -87,9 +86,9 @@ public class SpawnManager : MonoBehaviour {
                 }
                 if (!System.Single.IsNaN(angle))
                 {
-                    platform.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, angle);
+                    platform.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, angle-180);
                     platform.positionInOut();
-                }*/
+                }
 
                 //platform.transform.localPosition = new Vector3(position.x - (platform.getMeshFilter().mesh.bounds.size.x * platform.transform.localScale.x), platform.transform.localPosition.y, platform.transform.localPosition.z);
 
