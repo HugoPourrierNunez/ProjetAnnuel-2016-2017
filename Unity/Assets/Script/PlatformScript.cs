@@ -21,7 +21,7 @@ public class PlatformScript : MonoBehaviour {
     [SerializeField]
     Material selectedCubeMaterial;
 
-    PlatformManagerScript platformManager;
+    VRPlatformManagerScript platformManager;
     Material cubeMaterial = null;
 
     PlatformScript platformIn=null;
@@ -82,7 +82,7 @@ public class PlatformScript : MonoBehaviour {
         setPlatformOut(null);
     }
 
-    public void setPlatformManager(PlatformManagerScript manager)
+    public void setPlatformManager(VRPlatformManagerScript manager)
     {
         platformManager = manager;
     }

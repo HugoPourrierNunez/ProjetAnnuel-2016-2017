@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class VRPlatformManagerScript : MonoBehaviour {
 
-    /*[SerializeField]
+    [SerializeField]
     PlatformScript prefab;
 
     List<PlatformScript> allPlatform = new List<PlatformScript>();
@@ -17,12 +17,6 @@ public class VRPlatformManagerScript : MonoBehaviour {
     int nbMaxPlatform = 10;
 
     [SerializeField]
-    GameObject indexL;
-
-    [SerializeField]
-    GameObject indexR;
-
-    [SerializeField]
     public float distanceClose=0.4f;
 
     [SerializeField]
@@ -31,31 +25,24 @@ public class VRPlatformManagerScript : MonoBehaviour {
     [SerializeField]
     float totalBudget = 100.0f;
 
+    [SerializeField]
+    GrabScript grabScript;
+
     float usedBudget = 0.0f;
-
-    private bool activeLeftPinch = false;
-    private bool activeRightPinch = false;
-    private bool objectInCreation = false;
-
-    PlatformScript platformSpawning = null;
-
-    PlatformScript platformPointing = null;
-
-    PlatformScript platformDragging = null;
-
-    bool canClip = false;
 
     // Use this for initialization
     void Start () {
         Debug.Log("start");
-
-        allPlatform.Add(start);
-        start.setPlatformOut(start);
-        for (int i=1;i<this.nbMaxPlatform; i++)
+        if(start!=null)
+        {
+            allPlatform.Add(start);
+            start.setPlatformOut(start);
+        }
+        for (int i=0;i<this.nbMaxPlatform; i++)
         {
             var p = Instantiate(prefab);
             p.gameObject.SetActive(false);
-            //p.setPlatformManager(this);
+            p.setPlatformManager(this);
             p.transform.parent = transform;
             allPlatform.Add(p);
         }
@@ -70,195 +57,23 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-
-        if(platformSpawning != null)
+        GameObject grabObject = grabScript.getPinchedPlatform();
+        if (grabObject != null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit info;
-
-            float distance = 0;
-
-            if (spawnColliderQuad.Raycast(ray, out info, 1000))
+            PlatformScript p = findPlatformScriptByGO(grabObject);
+            if (p != null)
             {
-                float diffX = info.point.x - platformSpawning.transform.position.x;
-                float diffY = info.point.y - platformSpawning.transform.position.y;
-
-                distance = Mathf.Sqrt(diffX* diffX + diffY* diffY);
-
-                platformSpawning.getCube().transform.localScale = new Vector3(distance*2, platformSpawning.transform.localScale.y, platformSpawning.transform.localScale.z);
-
-                float angle = Mathf.Rad2Deg * Mathf.Asin(Mathf.Abs(diffY) / Mathf.Abs(distance));
-
-                if (diffX>0)
+                if (DetectNearestPieceAndAttach(p))
                 {
-                    if(diffY<0)
-                    {
-                        angle = -angle;
-                    }
-                }
-                else
-                {
-                    if (diffY > 0)
-                    {
-                        angle = 180 - angle;
-                    }
-                    else
-                    {
-                        angle = -180+angle;
-                    }
-                }
-                if(!System.Single.IsNaN(angle))
-                {
-                    platformSpawning.transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, angle);
-                    platformSpawning.positionInOut();
-                }
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                if(platformSpawning!=null && platformSpawning.getCube().transform.localScale.x>1)
-                {
-                    platformSpawning.positionInOut();
-                    platformSpawning = null;
-                    usedBudget += distance * 2;
-                    budgetTxt.text = (int)usedBudget + " / " + (int)totalBudget;
-                }
-            }
-
-            if (this.activeLeftPinch == true && this.activeRightPinch == true)
-            {
-                if (platformSpawning != null && platformSpawning.getCube().transform.localScale.x > 1)
-                {
-                    platformSpawning.positionInOut();
-                    platformSpawning = null;
+                    grabScript.unGrab();
                 }
             }
         }
-        else
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            spawnColliderQuad.gameObject.SetActive(false);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                if (hit.collider.gameObject.tag == "Piece")
-                {
-                    if (platformPointing != null)
-                        platformPointing.select(false);
-                    platformPointing = findPlatformScriptByCubeGO(hit.collider.gameObject);
-                    platformPointing.select(true);
-                }
-            }
-            else if (platformPointing != null)
-            {
-                platformPointing.select(false);
-                platformPointing = null;
-                platformDragging = null;
-            }
-            spawnColliderQuad.gameObject.SetActive(true);
-
-            if (Input.GetMouseButtonDown(0) && platformPointing != null)
-            {
-                canClip = true;
-                platformDragging = platformPointing;
-                if (platformDragging.hasAPlatform())
-                {
-                    //empeche de bouger
-                    platformDragging = null;
-                }
-            }
-            else if (Input.GetMouseButtonDown(1) && platformPointing != null)
-            {
-                canClip = false;
-                platformDragging = platformPointing;
-                if (!platformDragging.hasAPlatform())
-                {
-                    //empeche de bouger
-                    platformDragging = null;
-                }
-            }
-
-            else if (Input.GetMouseButtonUp(0))
-            {
-
-                if ((Time.time - doubleLeftClickStart) < timeDoubleClick && platformPointing==null)
-                {
-                    this.OnDoubleClick();
-                    doubleLeftClickStart = -1;
-                }
-                else
-                {
-                    doubleLeftClickStart = Time.time;
-                }
-                
-                platformDragging = null;
-                
-            }
-
-            else if (this.activeLeftPinch == true && this.activeRightPinch == true && this.objectInCreation == false)
-            {
-                Debug.Log("Hello 2 pinch !");
-                this.objectInCreation = true;
-                this.OnDoubleClick();
-            }
-            else if(this.activeLeftPinch == false || this.activeRightPinch == false)
-            {
-                this.objectInCreation = false;
-            }
-
-            else if (Input.GetMouseButtonUp(1) && platformPointing!=null)
-            {
-                //clic et doule clic right 
-
-                if ((Time.time - doubleRightClickStart) < timeDoubleClick)
-                {
-                    //double clickRight
-                    var length = platformPointing.gameObject.transform.FindChild("Cube").GetComponent<Collider>().bounds.size;
-                    usedBudget -= (int)Mathf.Sqrt(length[0] * length[0] + length[1] * length[1]);
-                    budgetTxt.text = (int)usedBudget + " / " + (int)totalBudget;
-
-                    platformPointing.unactive();
-                    doubleRightClickStart = -1;
-                }
-                else
-                {
-                    platformPointing.unclip();
-                    doubleRightClickStart = Time.time;
-                }
-
-                platformDragging = null;
-                platformPointing = null;
-            }
-
-            if (platformDragging!=null)
-            {
-                Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit info;
-
-                if (spawnColliderQuad.Raycast(ray2, out info, 1000))
-                {
-                    if (info.point.y > 0)
-                    {
-                        platformDragging.transform.position = info.point;
-                        if(canClip)
-                        {
-                            if (DetectNearestPieceAndAttach(platformDragging))
-                            {
-                                platformDragging = null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-
     }
 
     public PlatformScript findPlatformScriptByGO(GameObject go)
     {
-        for(int i=0;i< nbMaxPlatform; i++)
+        for(int i=0;i< allPlatform.Count; i++)
         {
             if(allPlatform[i].gameObject.activeInHierarchy)
             {
@@ -271,7 +86,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     public PlatformScript getPlatform()
     {
-        for (int i = 0; i < nbMaxPlatform; i++)
+        for (int i = 0; i < allPlatform.Count; i++)
         {
             if (!allPlatform[i].gameObject.activeInHierarchy)
             {
@@ -298,10 +113,10 @@ public class VRPlatformManagerScript : MonoBehaviour {
     public bool DetectNearestPieceAndAttach(PlatformScript platform)
     {
         PlatformScript nearestPlatform = null;
-        float nearest = 10000000f;
+        float nearest = float.MaxValue;
         bool result = true;
 
-        for (int i = 0; i < nbMaxPlatform; i++)
+        for (int i = 0; i < allPlatform.Count; i++)
         {
             if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i]!= platform && !allPlatform[i].hasPlatforms())
             {
@@ -352,6 +167,28 @@ public class VRPlatformManagerScript : MonoBehaviour {
             }
         }
         return false;
-    }*/
+    }
+
+    public void unactiveAllPlatform()
+    {
+        for (int i = 0; i < allPlatform.Count; i++)
+        {
+            allPlatform[i].unactive();
+        }
+    }
     
+    public bool unclip(GameObject grabObject)
+    {
+        PlatformScript p = findPlatformScriptByGO(grabObject);
+        if (p != null)
+        {
+            if (p.hasAPlatform())
+            {
+                p.unclip();
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

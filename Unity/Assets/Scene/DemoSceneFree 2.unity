@@ -1032,12 +1032,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f1050c98c9a3894495dec8d452bc55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigidBall: {fileID: 0}
-  spawnTransform: {fileID: 0}
-  ballTransform: {fileID: 0}
+  rigidBall:
+  - {fileID: 0}
+  spawnTransform:
+  - {fileID: 0}
+  ballTransform:
+  - {fileID: 0}
   _canvasVictory: {fileID: 0}
   _canvasLose: {fileID: 0}
   _levelLock: {fileID: 0}
+  _levels: []
 --- !u!4 &92286300
 Transform:
   m_ObjectHideFlags: 0
@@ -1084,6 +1088,7 @@ MonoBehaviour:
   leftPinchDetector: {fileID: 1447544247}
   prefab: {fileID: 114690539257550350, guid: fd8bec31a2dcc8a4c990c720f30b0337, type: 2}
   grabScript: {fileID: 293285188}
+  platformManagerScript: {fileID: 1896335658}
 --- !u!4 &92371304
 Transform:
   m_ObjectHideFlags: 0
@@ -2742,6 +2747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnManager: {fileID: 92371303}
   isRight: 1
+  vRPlatformManagerScript: {fileID: 1896335658}
 --- !u!54 &293285189
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -14421,6 +14427,53 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: d4806800cc28bd446899f2e9902ed943, type: 3}
   m_PrefabInternal: {fileID: 1890239360}
+--- !u!1 &1896335657
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1896335659}
+  - component: {fileID: 1896335658}
+  m_Layer: 0
+  m_Name: PlatformManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1896335658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1896335657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e189026be10186741843b89045fa45a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 114690539257550350, guid: fd8bec31a2dcc8a4c990c720f30b0337, type: 2}
+  start: {fileID: 0}
+  nbMaxPlatform: 10
+  distanceClose: 0.04
+  budgetTxt: {fileID: 0}
+  totalBudget: 100
+  grabScript: {fileID: 293285188}
+--- !u!4 &1896335659
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1896335657}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.08597155, y: 0.0014678906, z: -0.32430428}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1896789631
 Prefab:
   m_ObjectHideFlags: 0

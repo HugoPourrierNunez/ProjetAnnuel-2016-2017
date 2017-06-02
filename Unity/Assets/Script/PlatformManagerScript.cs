@@ -69,7 +69,7 @@ public class PlatformManagerScript : MonoBehaviour {
         {
             var p = Instantiate(prefab);
             p.gameObject.SetActive(false);
-            p.setPlatformManager(this);
+            //p.setPlatformManager(this);
             p.transform.parent = transform;
             allPlatform.Add(p);
         }

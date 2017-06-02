@@ -23,6 +23,9 @@ public class SpawnManager : MonoBehaviour {
     [SerializeField]
     GrabScript grabScript;
 
+    [SerializeField]
+    VRPlatformManagerScript platformManagerScript;
+
     private PlatformScript platform = null;
     private Vector3 position;
 
@@ -50,7 +53,7 @@ public class SpawnManager : MonoBehaviour {
             {
                 Debug.Log("Double Pinch");
                 spawning = true;
-                platform = Instantiate(prefab);
+                platform = platformManagerScript.getPlatform();
 
                 /*platform.transform.localPosition = new Vector3(platform.transform.localPosition.x, 
                     platform.transform.localPosition.y, 
@@ -65,7 +68,7 @@ public class SpawnManager : MonoBehaviour {
             {
                 float distance = Mathf.Abs(rightPinch.transform.position.x - leftPinch.transform.position.x);
                 Debug.Log("distance x" + distance);
-                platform.transform.localScale = new Vector3(distance*.5f, platform.transform.localScale.y, platform.transform.localScale.z);
+                platform.getCube().transform.localScale = new Vector3(distance*10, platform.getCube().transform.localScale.y, platform.getCube().transform.localScale.z);
 
                 float diffX = rightPinch.transform.position.x - platform.transform.position.x;
                 float diffY = rightPinch.transform.position.y - platform.transform.position.y;

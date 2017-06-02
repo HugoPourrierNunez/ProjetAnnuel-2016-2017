@@ -6,6 +6,7 @@ public class GrabScript : MonoBehaviour {
 
     private GameObject pinchedPlatform = null;
     private GameObject collidedPlatform = null;
+    private bool unclipped = false;
 
     [SerializeField]
     SpawnManager spawnManager;
@@ -13,17 +14,35 @@ public class GrabScript : MonoBehaviour {
     [SerializeField]
     bool isRight;
 
+    [SerializeField]
+    VRPlatformManagerScript vRPlatformManagerScript;
+
+    public GameObject getPinchedPlatform()
+    {
+        if (unclipped)
+            return null;
+        return pinchedPlatform;
+    }
+
+    public void unGrab()
+    {
+        collidedPlatform = null;
+        pinchedPlatform = null;
+    }
+
     public void updatePinchCollision()
     {
         if ((isRight && spawnManager.isRightPinchActive()) || (!isRight && spawnManager.isLeftPinchActive()))
         {
             pinchedPlatform = collidedPlatform;
+            if (vRPlatformManagerScript.unclip(pinchedPlatform))
+                unclipped = true;
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(!spawnManager.isSpawning() && other.gameObject.tag == "Piece")
+        if(!spawnManager.isSpawning() && other.gameObject.tag == "Piece" && collidedPlatform== null)
         {
             collidedPlatform = other.gameObject.transform.parent.gameObject;
             updatePinchCollision();
@@ -34,6 +53,7 @@ public class GrabScript : MonoBehaviour {
     {
         collidedPlatform = null;
         pinchedPlatform = null;
+        unclipped = false;
     }
 
 
