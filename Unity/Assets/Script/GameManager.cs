@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject[] _levels;
 
+    [SerializeField]
+    HandMenuManager handMenuManager;
+
     //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
     private int _gamestate;
 
@@ -50,6 +53,7 @@ public class GameManager : MonoBehaviour
     public void SelectLevel()
     {
         _gamestate = 1;
+        handMenuManager.activateContextualHandMenu(true);
     }
 
     public int GetLevel()
@@ -81,8 +85,9 @@ public class GameManager : MonoBehaviour
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        rigidBall[_level - 1].isKinematic = false;
+        rigidBall[_level].isKinematic = false;
         _gamestate = 3;
+        handMenuManager.activateContextualHandMenu(true);
     }
 
     public void Edit()
@@ -92,10 +97,11 @@ public class GameManager : MonoBehaviour
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        rigidBall[_level - 1].isKinematic = true;
-        ballTransform[_level - 1].position = spawnTransform[_level - 1].position;
-        ballTransform[_level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        rigidBall[_level].isKinematic = true;
+        ballTransform[_level].position = spawnTransform[_level].position;
+        ballTransform[_level].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
         _gamestate = 2;
+        handMenuManager.activateContextualHandMenu(true);
     }
 
     public int getGamestate()
@@ -106,7 +112,7 @@ public class GameManager : MonoBehaviour
     public void Retry()
     {
         //Delete all platforms
-        _levels[_level - 1].SetActive(false);
+        _levels[_level].SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
@@ -118,13 +124,14 @@ public class GameManager : MonoBehaviour
     public void GoToMenu()
     {
         //Delete all platforms
-        _levels[_level - 1].SetActive(false);
+        _levels[_level].SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
         _gamestate = 0;
+        handMenuManager.activateContextualHandMenu(true);
     }
 
     public void NextLevel()
@@ -137,9 +144,11 @@ public class GameManager : MonoBehaviour
     public void StartLevel(int level)
     {
         _levels[level - 1].SetActive(true);
-        rigidBall[_level - 1].isKinematic = true;
-        ballTransform[_level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
-        ballTransform[_level - 1].position = spawnTransform[_level - 1].position;
+        rigidBall[level - 1].isKinematic = true;
+        ballTransform[level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        ballTransform[level - 1].position = spawnTransform[level - 1].position;
+        _gamestate = 2;
+        handMenuManager.activateContextualHandMenu(true);
     }
 
     public void Save()

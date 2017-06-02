@@ -29,8 +29,9 @@ public class HandMenuManager : MonoBehaviour {
         if (b)
         {
             //Gamestate: 0(menu), 1(levels), 2(edit), 3(play), 4(end)
-            int state = 1;//gameManager.getGamestate();
-            if(state==0)
+            int state = gameManager.getGamestate();
+            Debug.Log("getGamestate=" +state);
+            if (state==0)
             {
                 handMenu.gameObject.SetActive(true);
             }

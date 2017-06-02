@@ -15,7 +15,7 @@ public class MoveBall : MonoBehaviour
     void Update ()
     {
         if (ground.GetIsGrounded())
-        { 
+        {
             Vector3 force = new Vector3(- speed, 0.0f, 0.0f);
             rigidBall.AddForce(force, ForceMode.Force);
         }

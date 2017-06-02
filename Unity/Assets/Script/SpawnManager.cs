@@ -51,7 +51,7 @@ public class SpawnManager : MonoBehaviour {
             //Debug.Log(Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position));
             if ( spawning == false && Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position) < .04f)
             {
-                Debug.Log("Double Pinch");
+                //Debug.Log("Double Pinch");
                 spawning = true;
                 platform = platformManagerScript.getPlatform();
 
@@ -67,7 +67,7 @@ public class SpawnManager : MonoBehaviour {
             if (spawning && platform!=null)
             {
                 float distance = Mathf.Abs(rightPinch.transform.position.x - leftPinch.transform.position.x);
-                Debug.Log("distance x" + distance);
+                //Debug.Log("distance x" + distance);
                 platform.getCube().transform.localScale = new Vector3(distance*10, platform.getCube().transform.localScale.y, platform.getCube().transform.localScale.z);
 
                 float diffX = rightPinch.transform.position.x - platform.transform.position.x;
@@ -123,7 +123,7 @@ public class SpawnManager : MonoBehaviour {
 
     public void setIsPinchLeft(bool b)
     {
-        Debug.Log("setIsPinchLeft");
+        //Debug.Log("setIsPinchLeft");
         isPinchLeft = b;
         grabScript.updatePinchCollision();
     }
@@ -139,7 +139,7 @@ public class SpawnManager : MonoBehaviour {
 
     public void setIsPinchRight(bool b)
     {
-        Debug.Log("setIsPinchRight");
+        //Debug.Log("setIsPinchRight");
         isPinchRight = b;
         grabScript.updatePinchCollision();
     }
