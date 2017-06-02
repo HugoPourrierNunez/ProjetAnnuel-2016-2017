@@ -20,6 +20,9 @@ public class SpawnManager : MonoBehaviour {
     [SerializeField]
     PlatformScript prefab;
 
+    [SerializeField]
+    GrabScript grabScript;
+
     private PlatformScript platform = null;
     private Vector3 position;
 
@@ -28,8 +31,13 @@ public class SpawnManager : MonoBehaviour {
 
     bool spawning = false;
 
-	// Use this for initialization
-	void Start () {
+    public bool isSpawning()
+    {
+        return spawning;
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -114,6 +122,7 @@ public class SpawnManager : MonoBehaviour {
     {
         Debug.Log("setIsPinchLeft");
         isPinchLeft = b;
+        grabScript.updatePinchCollision();
     }
 
     public GameObject getSpawningGo()
@@ -129,5 +138,16 @@ public class SpawnManager : MonoBehaviour {
     {
         Debug.Log("setIsPinchRight");
         isPinchRight = b;
+        grabScript.updatePinchCollision();
+    }
+
+    public bool isRightPinchActive()
+    {
+        return isPinchRight;
+    }
+
+    public bool isLeftPinchActive()
+    {
+        return isPinchLeft;
     }
 }
