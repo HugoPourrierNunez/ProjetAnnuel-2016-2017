@@ -77,6 +77,8 @@ namespace Leap.Unity
 
         private float _defaultNearClip;
 
+        private bool setToTrash = false;
+
         void Start()
         {
             //      if (_pinchDetectorA == null || _pinchDetectorB == null) {
@@ -105,14 +107,27 @@ namespace Leap.Unity
             transform.parent = _anchor;
         }
 
+        public void SetToTrash(bool b)
+        {
+            this.setToTrash = true;
+        }
+
         public void setPinchDetector(PinchDetector left, PinchDetector right)
         {
             _pinchDetectorA = left;
             _pinchDetectorB = right;
         }
 
+
+
         void Update()
         {
+
+            if (setToTrash == true)
+            {
+                this.gameObject.SetActive(false);
+                setToTrash = false;
+            }
 
             if (spawnManager != null && spawnManager.getSpawningGo() != null)
             {
