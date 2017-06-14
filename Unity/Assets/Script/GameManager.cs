@@ -30,6 +30,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     HandMenuManager handMenuManager;
 
+    [SerializeField]
+    Camera playerCamera;
+
+    [SerializeField]
+    Vector3 levelPositionRelCamera;
+
     //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
     private int _gamestate;
 
@@ -149,6 +155,7 @@ public class GameManager : MonoBehaviour
         ballTransform[level - 1].position = spawnTransform[level - 1].position;
         _gamestate = 2;
         handMenuManager.activateContextualHandMenu(true);
+        reinitLevelPosition();
     }
 
     public void Save()
@@ -157,6 +164,17 @@ public class GameManager : MonoBehaviour
         if(_level > prevLvl)
         {
             PlayerPrefs.SetInt("max_level", _level);
+        }
+    }
+
+    public void reinitLevelPosition()
+    {
+        for(int i =0;i<_levels.Length;i++)
+        {
+            if(_levels[i].gameObject.active)
+            {
+                _levels[i].transform.position = new Vector3(_levels[i].transform.position.x, _levels[i].transform.position.y + (playerCamera.transform.position.y - _levels[i].transform.position.y) + levelPositionRelCamera.y, _levels[i].transform.position.z);
+            }
         }
     }
 }

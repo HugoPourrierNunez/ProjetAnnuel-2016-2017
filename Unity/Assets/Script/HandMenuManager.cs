@@ -17,6 +17,9 @@ public class HandMenuManager : MonoBehaviour {
     Canvas handPlay;
 
     [SerializeField]
+    Canvas handReinit;
+
+    [SerializeField]
     GameManager gameManager;
 
     public void activateContextualHandMenu(bool b)
@@ -26,6 +29,7 @@ public class HandMenuManager : MonoBehaviour {
         handlevelMenu.gameObject.SetActive(false);
         handEdit.gameObject.SetActive(false);
         handPlay.gameObject.SetActive(false);
+        handReinit.gameObject.SetActive(false);
         if (b)
         {
             //Gamestate: 0(menu), 1(levels), 2(edit), 3(play), 4(end)
@@ -43,10 +47,12 @@ public class HandMenuManager : MonoBehaviour {
             else if (state == 2)
             {
                 handEdit.gameObject.SetActive(true);
+                handReinit.gameObject.SetActive(true);
             }
             else if (state == 3)
             {
                 handPlay.gameObject.SetActive(true);
+                handReinit.gameObject.SetActive(true);
             }
         }
     }
