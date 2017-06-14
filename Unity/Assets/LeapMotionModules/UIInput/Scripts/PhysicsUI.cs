@@ -64,6 +64,7 @@ namespace Leap.Unity.InputModule {
     }
 
     void Update() {
+            //Debug.Log("Update phisics Button");
       pointerEvent.position = Camera.main.WorldToScreenPoint(ButtonFace.transform.position);
       if (physicsOccurred) {
         physicsOccurred = false;
@@ -78,10 +79,11 @@ namespace Leap.Unity.InputModule {
         Vector3 newWorldPhysicsVelocity = transform.TransformDirection(localPhysicsVelocity);
         PhysicsVelocity = newWorldPhysicsVelocity;
 
-        if (localPhysicsPosition.z > 0) {
-          ButtonFace.localPosition = new Vector3(InitialLocalPosition.x, InitialLocalPosition.y, 0f);
-          PhysicsVelocity = PhysicsVelocity / 2f;
-          isDepressed = true;
+        if (localPhysicsPosition.z > 0 ) {
+            ButtonFace.localPosition = new Vector3(InitialLocalPosition.x, InitialLocalPosition.y, 0f);
+            PhysicsVelocity = PhysicsVelocity / 2f;
+            isDepressed = true;
+          
         } else if (localPhysicsPosition.z < SpringJoint.connectedAnchor.z * 2f) {
           ButtonFace.localPosition = new Vector3(InitialLocalPosition.x, InitialLocalPosition.y, SpringJoint.connectedAnchor.z * 2f);
           PhysicsPosition = ButtonFace.position;
@@ -99,11 +101,14 @@ namespace Leap.Unity.InputModule {
       }
 
       if (isDepressed && !prevDepressed) {
+                Debug.Log("pressed");
         prevDepressed = true;
         ExecuteEvents.Execute(gameObject, pointerEvent, ExecuteEvents.pointerEnterHandler);
         ExecuteEvents.Execute(gameObject, pointerEvent, ExecuteEvents.pointerDownHandler);
-      } else if (!isDepressed && prevDepressed) {
-        prevDepressed = false;
+      } else if (!isDepressed && prevDepressed)
+            {
+                Debug.Log("unpressed");
+                prevDepressed = false;
         ExecuteEvents.Execute(gameObject, pointerEvent, ExecuteEvents.pointerExitHandler);
         ExecuteEvents.Execute(gameObject, pointerEvent, ExecuteEvents.pointerClickHandler);
         ExecuteEvents.Execute(gameObject, pointerEvent, ExecuteEvents.pointerUpHandler);
