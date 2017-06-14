@@ -173,7 +173,9 @@ public class GameManager : MonoBehaviour
         {
             if(_levels[i].gameObject.active)
             {
-                _levels[i].transform.position = new Vector3(_levels[i].transform.position.x, _levels[i].transform.position.y + (playerCamera.transform.position.y - _levels[i].transform.position.y) + levelPositionRelCamera.y, _levels[i].transform.position.z);
+                _levels[i].transform.position = new Vector3(playerCamera.transform.position.x + levelPositionRelCamera.x,
+                    playerCamera.transform.position.y + levelPositionRelCamera.y,
+                    playerCamera.transform.position.z + levelPositionRelCamera.z);
             }
         }
     }

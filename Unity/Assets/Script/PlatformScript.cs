@@ -73,9 +73,9 @@ public class PlatformScript : MonoBehaviour {
 
     public void unclip()
     {
-        if (getPlatformIn())
+        if (getPlatformIn()!=null)
             getPlatformIn().setPlatformOut(null);
-        if (getPlatformOut())
+        if (getPlatformOut()!=null)
             getPlatformOut().setPlatformIn(null);
 
         setPlatformIn(null);
@@ -176,6 +176,14 @@ public class PlatformScript : MonoBehaviour {
         goOutMarker.transform.localPosition = new Vector3(-cube.localScale.x / 2, goOutMarker.transform.localPosition.y, goOutMarker.transform.localPosition.z);
     }
 
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.gameObject.tag=="Trash")
+        {
+            unclip();
+        }
+    }
 
 
 }

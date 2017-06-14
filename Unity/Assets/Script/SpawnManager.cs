@@ -125,7 +125,7 @@ public class SpawnManager : MonoBehaviour {
     {
         //Debug.Log("setIsPinchLeft");
         isPinchLeft = b;
-        grabScript.updatePinchCollision();
+        //grabScript.updatePinchCollision();
     }
 
     public GameObject getSpawningGo()
@@ -140,6 +140,9 @@ public class SpawnManager : MonoBehaviour {
     public void setIsPinchRight(bool b)
     {
         //Debug.Log("setIsPinchRight");
+        if (b == false)
+            grabScript.setNeedUnpinch(false);
+
         isPinchRight = b;
         grabScript.updatePinchCollision();
     }

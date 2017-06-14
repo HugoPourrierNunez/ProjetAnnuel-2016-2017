@@ -17,6 +17,25 @@ public class GrabScript : MonoBehaviour {
     [SerializeField]
     VRPlatformManagerScript vRPlatformManagerScript;
 
+    private bool needUnpinch = true;
+    private PlatformScript lastPlatformAttached;
+
+    public void setUnclipped(bool b)
+    {
+        unclipped = b;
+    }
+
+    public void setLastPlatformAttached(PlatformScript platform)
+    {
+        needUnpinch = true;
+        lastPlatformAttached = platform;
+    }
+
+    public void setNeedUnpinch(bool b)
+    {
+        needUnpinch = b;
+    }
+
     public GameObject getPinchedPlatform()
     {
         if (unclipped)
@@ -32,6 +51,9 @@ public class GrabScript : MonoBehaviour {
 
     public void updatePinchCollision()
     {
+        if (needUnpinch && collidedPlatform == lastPlatformAttached)
+            return;
+
         if ((isRight && spawnManager.isRightPinchActive()) || (!isRight && spawnManager.isLeftPinchActive()))
         {
             pinchedPlatform = collidedPlatform;

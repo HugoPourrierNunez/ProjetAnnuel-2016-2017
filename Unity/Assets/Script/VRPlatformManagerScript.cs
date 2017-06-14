@@ -30,6 +30,12 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     float usedBudget = 0.0f;
 
+    //info pour le unclip
+    private PlatformScript lastPlatformGrabAndUnClipped = null;
+    private PlatformScript lastPlatformUnClipped=null;
+    private bool connectedOnIn = true;
+    private bool canReAttach = true;
+
     // Use this for initialization
     void Start () {
         Debug.Log("start");
@@ -57,6 +63,26 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if(!canReAttach && lastPlatformGrabAndUnClipped!=null && lastPlatformUnClipped!=null)
+        {
+            if(connectedOnIn)
+            {
+                if(Vector3.Distance(lastPlatformGrabAndUnClipped.getGoInMarker().transform.position, lastPlatformUnClipped.getGoOutMarker().transform.position)> distanceClose*2)
+                {
+                    canReAttach = true;
+                    grabScript.setUnclipped(false);
+                }
+            }
+            else
+            {
+                if (Vector3.Distance(lastPlatformGrabAndUnClipped.getGoOutMarker().transform.position, lastPlatformUnClipped.getGoInMarker().transform.position) > distanceClose * 2)
+                {
+                    canReAttach = true;
+                    grabScript.setUnclipped(false);
+                }
+            }
+        }
+
         GameObject grabObject = grabScript.getPinchedPlatform();
         if (grabObject != null)
         {
@@ -66,6 +92,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
                 if (DetectNearestPieceAndAttach(p))
                 {
                     grabScript.unGrab();
+                    grabScript.setLastPlatformAttached(p);
                 }
             }
         }
@@ -115,6 +142,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
         PlatformScript nearestPlatform = null;
         float nearest = float.MaxValue;
         bool result = true;
+        bool nearesrResult = true;
 
         for (int i = 0; i < allPlatform.Count; i++)
         {
@@ -127,6 +155,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
                 {
                     nearest = currentDist;
                     nearestPlatform = allPlatform[i];
+                    nearesrResult = result;
                 }
             }
         }
@@ -137,7 +166,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
             if (nearest < distanceClose)
             {
                 //a verifier
-                if(result)
+                if(nearesrResult)
                 {
                     GameObject inGameObject = nearestPlatform.getGoInMarker();
                     GameObject outGameObject = platform.getGoOutMarker();
@@ -148,6 +177,27 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
                     nearestPlatform.setPlatformIn(platform);
                     platform.setPlatformOut(nearestPlatform);
+
+                    PlatformScript nearestPlatform2 = null;
+                    float nearest2 = float.MaxValue;
+
+                    for (int i = 0; i < allPlatform.Count; i++)
+                    {
+                        if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i] != platform && allPlatform[i] != nearestPlatform)
+                        {
+                            float dist = Vector3.Distance(platform.getGoInMarker().transform.position, allPlatform[i].getGoOutMarker().transform.position);
+                            if(dist<nearest2)
+                            {
+                                nearestPlatform2 = allPlatform[i];
+                                nearest2 = dist;
+                            }
+                        }
+                    }
+                    if(nearest2<0.01)
+                    {
+                        nearestPlatform2.setPlatformOut(platform);
+                        platform.setPlatformIn(nearestPlatform2);
+                    }
                     return true;
 
                 }
@@ -162,6 +212,28 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
                     nearestPlatform.setPlatformOut(platform);
                     platform.setPlatformIn(nearestPlatform);
+
+                    PlatformScript nearestPlatform2 = null;
+                    float nearest2 = float.MaxValue;
+
+                    for (int i = 0; i < allPlatform.Count; i++)
+                    {
+                        if (allPlatform[i].gameObject.activeInHierarchy && allPlatform[i] != platform && allPlatform[i] != nearestPlatform)
+                        {
+                            float dist = Vector3.Distance(platform.getGoOutMarker().transform.position, allPlatform[i].getGoInMarker().transform.position);
+                            if (dist < nearest2)
+                            {
+                                nearestPlatform2 = allPlatform[i];
+                                nearest2 = dist;
+                            }
+                        }
+                    }
+                    if (nearest2 < 0.01)
+                    {
+                        nearestPlatform2.setPlatformIn(platform);
+                        platform.setPlatformOut(nearestPlatform2);
+                    }
+
                     return true;
                 }
             }
@@ -184,7 +256,20 @@ public class VRPlatformManagerScript : MonoBehaviour {
         {
             if (p.hasAPlatform())
             {
+                lastPlatformGrabAndUnClipped = p;
+                if (p.getPlatformIn()!=null)
+                {
+                    lastPlatformUnClipped = p.getPlatformIn();
+                    connectedOnIn = true;
+                }
+                else
+                {
+                    lastPlatformUnClipped = p.getPlatformOut();
+                    connectedOnIn = false;
+                }
+                canReAttach = false;
                 p.unclip();
+
                 return true;
             }
         }
