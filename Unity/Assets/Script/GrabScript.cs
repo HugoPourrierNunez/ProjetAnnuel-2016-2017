@@ -18,7 +18,7 @@ public class GrabScript : MonoBehaviour {
     VRPlatformManagerScript vRPlatformManagerScript;
 
     private bool needUnpinch = true;
-    private PlatformScript lastPlatformAttached;
+    private GameObject lastPlatformAttached;
 
     public void setUnclipped(bool b)
     {
@@ -28,7 +28,7 @@ public class GrabScript : MonoBehaviour {
     public void setLastPlatformAttached(PlatformScript platform)
     {
         needUnpinch = true;
-        lastPlatformAttached = platform;
+        lastPlatformAttached = platform.gameObject;
     }
 
     public void setNeedUnpinch(bool b)

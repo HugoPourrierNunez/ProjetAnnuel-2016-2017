@@ -26,6 +26,9 @@ public class SpawnManager : MonoBehaviour {
     [SerializeField]
     VRPlatformManagerScript platformManagerScript;
 
+    [SerializeField]
+    GameManager gameManager;
+
     private PlatformScript platform = null;
     private Vector3 position;
 
@@ -49,7 +52,7 @@ public class SpawnManager : MonoBehaviour {
         if (isPinchRight && isPinchLeft)
         {
             //Debug.Log(Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position));
-            if ( spawning == false && Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position) < .04f)
+            if ( spawning == false && Vector3.Distance(rightPinch.transform.position, leftPinch.transform.position) < .04f && gameManager.getGamestate()==2)
             {
                 //Debug.Log("Double Pinch");
                 spawning = true;

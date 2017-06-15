@@ -54,11 +54,25 @@ public class VRPlatformManagerScript : MonoBehaviour {
         }
     }
 
-
+    public void setPlatformStart(PlatformScript p)
+    {
+        if(start!=null)
+        {
+            allPlatform.Remove(start);
+        }
+        start = p;
+        allPlatform.Add(start);
+        start.setPlatformIn(start);
+    }
 
     public bool IsBudgetOver()
     {
         return (usedBudget > totalBudget);
+    }
+
+    public void unactivePlatform(GameObject go)
+    {
+        findPlatformScriptByGO(go).unactive();
     }
 
     // Update is called once per frame
@@ -245,7 +259,8 @@ public class VRPlatformManagerScript : MonoBehaviour {
     {
         for (int i = 0; i < allPlatform.Count; i++)
         {
-            allPlatform[i].unactive();
+            if(allPlatform[i]!=start)
+                allPlatform[i].unactive();
         }
     }
     

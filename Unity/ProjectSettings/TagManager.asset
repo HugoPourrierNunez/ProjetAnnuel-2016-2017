@@ -8,6 +8,7 @@ TagManager:
   - Piece
   - In
   - Trash
+  - Platform
   layers:
   - Default
   - TransparentFX

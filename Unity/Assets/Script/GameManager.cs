@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     LevelLock _levelLock;
 
     [SerializeField]
-    GameObject[] _levels;
+    LevelScript[] _levels;
 
     [SerializeField]
     HandMenuManager handMenuManager;
@@ -35,6 +35,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     Vector3 levelPositionRelCamera;
+
+    [SerializeField]
+    Vector3 canvasPositionRelCamera;
+
+    [SerializeField]
+    VRPlatformManagerScript vRPlatformManagerScript;
+
+    private int levelInProgress = -1;
 
     //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
     private int _gamestate;
@@ -69,7 +77,17 @@ public class GameManager : MonoBehaviour
 
     public void Win()
     {
+
         Save();
+
+
+        _levels[levelInProgress].gameObject.SetActive(false);
+
+        vRPlatformManagerScript.unactiveAllPlatform();
+
+        _canvasVictory.transform.position = new Vector3(playerCamera.transform.position.x + canvasPositionRelCamera.x,
+                    playerCamera.transform.position.y + canvasPositionRelCamera.y,
+                    playerCamera.transform.position.z + canvasPositionRelCamera.z);
         _canvasVictory.gameObject.SetActive(true);
         _gamestate = 4;
         if(_level < _levels.Length)
@@ -80,6 +98,12 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
+        _levels[levelInProgress].gameObject.SetActive(false);
+        vRPlatformManagerScript.unactiveAllPlatform();
+
+        _canvasLose.transform.position = new Vector3(playerCamera.transform.position.x + canvasPositionRelCamera.x,
+                       playerCamera.transform.position.y + canvasPositionRelCamera.y,
+                       playerCamera.transform.position.z + canvasPositionRelCamera.z);
         _canvasLose.gameObject.SetActive(true);
         _gamestate = 4;
     }
@@ -118,7 +142,7 @@ public class GameManager : MonoBehaviour
     public void Retry()
     {
         //Delete all platforms
-        _levels[_level].SetActive(false);
+        _levels[_level].gameObject.SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
@@ -130,7 +154,7 @@ public class GameManager : MonoBehaviour
     public void GoToMenu()
     {
         //Delete all platforms
-        _levels[_level].SetActive(false);
+        _levels[_level].gameObject.SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
@@ -138,18 +162,65 @@ public class GameManager : MonoBehaviour
         }
         _gamestate = 0;
         handMenuManager.activateContextualHandMenu(true);
+
+
+        vRPlatformManagerScript.unactiveAllPlatform();
     }
 
     public void NextLevel()
     {
         //Delete all platforms
-        _levels[_level - 1].SetActive(false);
+        _levels[_level - 1].gameObject.SetActive(false);
         StartLevel(++_level);
+    }
+
+    public void StartLevel()
+    {
+        vRPlatformManagerScript.unactiveAllPlatform();
+        _levels[levelInProgress].gameObject.SetActive(true);
+        rigidBall[levelInProgress].isKinematic = true;
+        ballTransform[levelInProgress].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        ballTransform[levelInProgress].position = spawnTransform[levelInProgress].position;
+        _gamestate = 2;
+        handMenuManager.activateContextualHandMenu(true);
+        reinitLevelPosition();
+    }
+
+
+    public void StartNextLevel()
+    {
+        _levels[levelInProgress].gameObject.SetActive(false);
+        if (levelInProgress < _levels.Length - 1)
+            levelInProgress++;
+
+
+        vRPlatformManagerScript.unactiveAllPlatform();
+        vRPlatformManagerScript.setPlatformStart(_levels[levelInProgress].getPlatformStart());
+        _levels[levelInProgress].gameObject.SetActive(true);
+        rigidBall[levelInProgress].isKinematic = true;
+        ballTransform[levelInProgress].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        ballTransform[levelInProgress].position = spawnTransform[levelInProgress].position;
+        _gamestate = 2;
+        handMenuManager.activateContextualHandMenu(true);
+        reinitLevelPosition();
+    }
+
+
+    public void HideVictoryCanvas()
+    {
+        _canvasVictory.gameObject.SetActive(false);
+    }
+
+    public void HideLooseCanvas()
+    {
+        _canvasLose.gameObject.SetActive(false);
     }
 
     public void StartLevel(int level)
     {
-        _levels[level - 1].SetActive(true);
+        levelInProgress = level-1;
+        vRPlatformManagerScript.setPlatformStart(_levels[level - 1].getPlatformStart());
+        _levels[level - 1].gameObject.SetActive(true);
         rigidBall[level - 1].isKinematic = true;
         ballTransform[level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
         ballTransform[level - 1].position = spawnTransform[level - 1].position;
@@ -169,14 +240,8 @@ public class GameManager : MonoBehaviour
 
     public void reinitLevelPosition()
     {
-        for(int i =0;i<_levels.Length;i++)
-        {
-            if(_levels[i].gameObject.active)
-            {
-                _levels[i].transform.position = new Vector3(playerCamera.transform.position.x + levelPositionRelCamera.x,
+        _levels[levelInProgress].transform.position = new Vector3(playerCamera.transform.position.x + levelPositionRelCamera.x,
                     playerCamera.transform.position.y + levelPositionRelCamera.y,
                     playerCamera.transform.position.z + levelPositionRelCamera.z);
-            }
-        }
     }
 }

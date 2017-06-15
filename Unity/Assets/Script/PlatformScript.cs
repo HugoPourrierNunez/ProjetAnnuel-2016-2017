@@ -174,16 +174,7 @@ public class PlatformScript : MonoBehaviour {
     {
         goInMarker.transform.localPosition = new Vector3(cube.localScale.x/2, goInMarker.transform.localPosition.y, goInMarker.transform.localPosition.z);
         goOutMarker.transform.localPosition = new Vector3(-cube.localScale.x / 2, goOutMarker.transform.localPosition.y, goOutMarker.transform.localPosition.z);
-    }
-
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if(collision.collider.gameObject.tag=="Trash")
-        {
-            unclip();
-        }
-    }
+    } 
 
 
 }
