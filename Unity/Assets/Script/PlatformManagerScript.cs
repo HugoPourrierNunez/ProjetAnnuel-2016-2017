@@ -228,7 +228,7 @@ public class PlatformManagerScript : MonoBehaviour {
                 if ((Time.time - doubleRightClickStart) < timeDoubleClick)
                 {
                     //double clickRight
-                    var length = platformPointing.gameObject.transform.FindChild("Cube").GetComponent<Collider>().bounds.size;
+                    var length = platformPointing.gameObject.transform.Find("Cube").GetComponent<Collider>().bounds.size;
                     usedBudget -= (int)Mathf.Sqrt(length[0] * length[0] + length[1] * length[1]);
                     budgetTxt.text = (int)usedBudget + " / " + (int)totalBudget;
 

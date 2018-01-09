@@ -36,6 +36,16 @@ public class VRPlatformManagerScript : MonoBehaviour {
     private bool connectedOnIn = true;
     private bool canReAttach = true;
 
+    public void updatePlatformPosition(Vector3 delta)
+    {
+        for (int i = 0; i < this.nbMaxPlatform; i++)
+        {
+            if (allPlatform[i].isActiveAndEnabled)
+                allPlatform[i].transform.position += delta;
+        }
+
+    }
+
     // Use this for initialization
     void Start () {
         Debug.Log("start");
@@ -63,6 +73,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
         start = p;
         allPlatform.Add(start);
         start.setPlatformIn(start);
+        start.setPlatformOut(null);
     }
 
     public bool IsBudgetOver()

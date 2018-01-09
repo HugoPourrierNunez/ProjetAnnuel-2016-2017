@@ -15,18 +15,19 @@ public class LevelLock : MonoBehaviour
 
     void OnEnable ()
     {
-        _unlockLvl = PlayerPrefs.GetInt("max_level", 1);
-        for(int i = _unlockLvl; i < 5; ++i)
+        _unlockLvl = 2;//PlayerPrefs.GetInt("max_level", 1);
+        for (int i = _unlockLvl; i < 5; ++i)
         {
             _levelsBtn[i].interactable = false;
             _locks[i].SetActive(true);
         }
 
-	}
+    }
 
     public void UnlockLevel(int level)
     {
-        _levelsBtn[level - 1].interactable = true;
-        _locks[level - 1].SetActive(false);
+        Debug.Log("level=" + level);
+        _levelsBtn[level].interactable = true;
+        _locks[level ].SetActive(false);
     }
 }

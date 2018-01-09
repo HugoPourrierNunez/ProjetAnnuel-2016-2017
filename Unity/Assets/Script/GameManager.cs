@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     LevelLock _levelLock;
 
     [SerializeField]
-    LevelScript[] _levels;
+    LevelScript[] _levels; 
 
     [SerializeField]
     HandMenuManager handMenuManager;
@@ -46,8 +46,6 @@ public class GameManager : MonoBehaviour
 
     //Gamestate : 0 (menu), 1 (levels), 2 (edit), 3 (play), 4 (end)
     private int _gamestate;
-
-    private int _level;
 
     void Start()
     {
@@ -72,12 +70,12 @@ public class GameManager : MonoBehaviour
 
     public int GetLevel()
     {
-        return _level;
+        return levelInProgress;
     }
 
     public void Win()
     {
-
+        Debug.Log("gagné!!!");
         Save();
 
 
@@ -90,9 +88,9 @@ public class GameManager : MonoBehaviour
                     playerCamera.transform.position.z + canvasPositionRelCamera.z);
         _canvasVictory.gameObject.SetActive(true);
         _gamestate = 4;
-        if(_level < _levels.Length)
+        if(levelInProgress+1 < _levels.Length)
         {
-            _levelLock.UnlockLevel(_level);
+            _levelLock.UnlockLevel(levelInProgress + 1);
         }
     }
 
@@ -115,7 +113,7 @@ public class GameManager : MonoBehaviour
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        rigidBall[_level].isKinematic = false;
+        rigidBall[levelInProgress].isKinematic = false;
         _gamestate = 3;
         handMenuManager.activateContextualHandMenu(true);
     }
@@ -127,9 +125,9 @@ public class GameManager : MonoBehaviour
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        rigidBall[_level].isKinematic = true;
-        ballTransform[_level].position = spawnTransform[_level].position;
-        ballTransform[_level].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        rigidBall[levelInProgress].isKinematic = true;
+        ballTransform[levelInProgress].position = spawnTransform[levelInProgress].position;
+        ballTransform[levelInProgress].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
         _gamestate = 2;
         handMenuManager.activateContextualHandMenu(true);
     }
@@ -142,19 +140,19 @@ public class GameManager : MonoBehaviour
     public void Retry()
     {
         //Delete all platforms
-        _levels[_level].gameObject.SetActive(false);
+        _levels[levelInProgress].gameObject.SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
             _canvasVictory.gameObject.SetActive(false);
         }
-        StartLevel(_level);
+        StartLevel(levelInProgress);
     }
 
     public void GoToMenu()
     {
         //Delete all platforms
-        _levels[_level].gameObject.SetActive(false);
+        _levels[levelInProgress].gameObject.SetActive(false);
         if (_gamestate == 4)
         {
             _canvasLose.gameObject.SetActive(false);
@@ -170,8 +168,8 @@ public class GameManager : MonoBehaviour
     public void NextLevel()
     {
         //Delete all platforms
-        _levels[_level - 1].gameObject.SetActive(false);
-        StartLevel(++_level);
+        _levels[levelInProgress].gameObject.SetActive(false);
+        StartLevel(++levelInProgress);
     }
 
     public void StartLevel()
@@ -218,12 +216,12 @@ public class GameManager : MonoBehaviour
 
     public void StartLevel(int level)
     {
-        levelInProgress = level-1;
-        vRPlatformManagerScript.setPlatformStart(_levels[level - 1].getPlatformStart());
-        _levels[level - 1].gameObject.SetActive(true);
-        rigidBall[level - 1].isKinematic = true;
-        ballTransform[level - 1].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
-        ballTransform[level - 1].position = spawnTransform[level - 1].position;
+        levelInProgress = level;
+        vRPlatformManagerScript.setPlatformStart(_levels[levelInProgress].getPlatformStart());
+        _levels[levelInProgress].gameObject.SetActive(true);
+        rigidBall[levelInProgress].isKinematic = true;
+        ballTransform[levelInProgress].rotation.Set(0.0f, 0.0f, 0.0f, 0.0f);
+        ballTransform[levelInProgress].position = spawnTransform[levelInProgress].position;
         _gamestate = 2;
         handMenuManager.activateContextualHandMenu(true);
         reinitLevelPosition();
@@ -232,16 +230,21 @@ public class GameManager : MonoBehaviour
     public void Save()
     {
         var prevLvl = PlayerPrefs.GetInt("max_level", -1);
-        if(_level > prevLvl)
+        if(levelInProgress > prevLvl)
         {
-            PlayerPrefs.SetInt("max_level", _level);
+            PlayerPrefs.SetInt("max_level", levelInProgress);
         }
     }
 
     public void reinitLevelPosition()
     {
-        _levels[levelInProgress].transform.position = new Vector3(playerCamera.transform.position.x + levelPositionRelCamera.x,
+        Vector3 newPos = new Vector3(playerCamera.transform.position.x + levelPositionRelCamera.x,
                     playerCamera.transform.position.y + levelPositionRelCamera.y,
                     playerCamera.transform.position.z + levelPositionRelCamera.z);
+        Vector3 delta = newPos - _levels[levelInProgress].transform.position;
+        _levels[levelInProgress].transform.position = newPos;
+        vRPlatformManagerScript.updatePlatformPosition(delta);
+
+
     }
 }

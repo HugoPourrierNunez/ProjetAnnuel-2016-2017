@@ -5,8 +5,13 @@ using UnityEngine;
 public class NopeZoneDetection : MonoBehaviour
 {
     private int _platforms = 0;
-	
-	void OnTriggerEnter(Collider col)
+
+    private void OnEnable()
+    {
+        _platforms = 0;
+    }
+
+    void OnTriggerEnter(Collider col)
     {
         _platforms++;
         Debug.Log(_platforms);
@@ -20,6 +25,6 @@ public class NopeZoneDetection : MonoBehaviour
 
     public bool IsCrossed()
     {
-        return (_platforms == 0);
+        return (_platforms != 0);
     }
 }
