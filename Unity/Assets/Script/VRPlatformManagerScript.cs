@@ -83,6 +83,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     public void unactivePlatform(GameObject go)
     {
+        grabScript.unGrab();
         findPlatformScriptByGO(go).unactive();
     }
 
