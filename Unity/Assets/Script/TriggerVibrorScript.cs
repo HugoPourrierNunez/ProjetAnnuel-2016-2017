@@ -12,10 +12,21 @@ public class TriggerVibrorScript : MonoBehaviour {
     int vibrationTime;
 
     [SerializeField]
+    string ipDroite;
+
+    [SerializeField]
+    string ipGauche;
+
     string ip;
 
-	// Use this for initialization
-	void Start () {
+    [SerializeField]
+    bool isLeft;
+
+    [SerializeField]
+    int fingerId;
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -29,42 +40,29 @@ public class TriggerVibrorScript : MonoBehaviour {
 
         int handIndex = 0;
 
-        if (col.gameObject.transform.parent.parent.gameObject.name == "RigidRoundHand_R")
+        if (!isLeft)
         {
             handIndex = 2;
         }
-        else if (col.gameObject.transform.parent.parent.gameObject.name == "RigidRoundHand_L")
+        else
         {
             handIndex = 1;
         }
 
-        if (col.gameObject.name == "bone3" && handIndex != 0)
+        if (handIndex == 1)
+        {
+            ip = ipGauche;
+        }
+        else
+            ip = ipDroite;
+
+        if ( handIndex != 0)
         {
             Debug.Log("IN");
             WebRequest request = null;
-           
-            if (col.gameObject.transform.parent.name == "thumb")
-            {
-                request = WebRequest.Create("http://" + ip + "/" + handIndex + "?1?" + vibrationFrequency + "?" + vibrationTime);
-            }
-            else if (col.gameObject.transform.parent.name == "index")
-            {
-                Debug.Log("Index");
-                request = WebRequest.Create("http://" + ip + "/" + handIndex + "?2?" + vibrationFrequency + "?" + vibrationTime);
-            }
-            else if (col.gameObject.transform.parent.name == "middle")
-            {
-                request = WebRequest.Create("http://" + ip + "/" + handIndex + "?3?" + vibrationFrequency + "?" + vibrationTime);
-            }
-            else if (col.gameObject.transform.parent.name == "ring")
-            {
-                request = WebRequest.Create("http://" + ip + "/" + handIndex + "?4?" + vibrationFrequency + "?" + vibrationTime);
-            }
-            else if (col.gameObject.transform.parent.name == "pinky")
-            {
-                request = WebRequest.Create("http://" + ip + "/" + handIndex + "?5?" + vibrationFrequency + "?" + vibrationTime);
-            }
-            request.Timeout = 100;
+            request.Proxy = null;
+            request = WebRequest.Create("http://" + ip + "/" + fingerId + "?" + vibrationFrequency + "?" + vibrationTime);
+            request.Timeout = 1;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
         }
     }

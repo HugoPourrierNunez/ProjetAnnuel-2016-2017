@@ -126,10 +126,10 @@ public class PlatformScript : MonoBehaviour {
         else
             hideMarkerIn();
 
-        WebRequest request = null;
-        request = WebRequest.Create("http://192.168.1.14/2?1?150?500");
-        request.Timeout = 100;
-        WebResponse response = request.GetResponse();
+        //WebRequest request = null;
+        //request = WebRequest.Create("http://192.168.1.14/2?1?150?500");
+        //request.Timeout = 100;
+        //WebResponse response = request.GetResponse();
     }
 
     public void setPlatformOut(PlatformScript platform)
