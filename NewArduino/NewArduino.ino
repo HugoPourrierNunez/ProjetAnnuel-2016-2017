@@ -12,8 +12,16 @@ int vibMiddle = 9;
 int vibRing = 11;
 int vibPinky = 6;
 
+int fingers[] = {vibThumb,vibIndex,vibMiddle,vibRing,vibPinky};
+
 int handId = 2;
 
+String getString = ":GET /";
+String httpString = " HTTP/";
+
+
+bool findGet = false, findHttp=false;
+String reponse = "";
 
 int sensorValue = 0;
 /****************************************************************/
@@ -26,12 +34,11 @@ void setup()
   ESP8266.begin(115200);
   envoieAuESP8266("AT+CIOBAUD=9600");
   recoitDuESP8266(4000);
-  
-  pinMode(vibThumb, OUTPUT);
-  pinMode(vibIndex, OUTPUT);
-  pinMode(vibMiddle, OUTPUT);
-  pinMode(vibRing, OUTPUT);
-  pinMode(vibPinky, OUTPUT);
+
+  for(int i=0;i<5;i++)
+  {
+    pinMode(fingers[i], OUTPUT);
+  }
   
   ESP8266.begin(9600);  
   initESP8266();
@@ -124,37 +131,53 @@ void recoitDuESP8266(const int timeout)
 
 void recoitDuESP8266Short()
 {
-  String reponse = "";
-   
-  while(ESP8266.available())
-  {
-    char c = ESP8266.read();
-    reponse+=c;
-  }
+    while(ESP8266.available())
+    {
+      char c = ESP8266.read();
+      reponse+=c;
+    }
+    if(!findGet)
+    {
+      findGet = reponse.indexOf(getString)!=-1;
+    }
+    if(!findHttp)
+    {
+      findHttp = reponse.indexOf(httpString)!=-1;
+    }
+    if(findGet && findHttp)
+    {
+      
+      String value = reponse.substring(reponse.indexOf(getString)+getString.length(), reponse.indexOf(httpString));
+      //Serial.print("'"+value+"'");
+      
+      /*+IPD,0,76:GET /3?150?250?0?0 HTTP/1.1
+      Connection: keep-alive
+      Host: 192.168.0.101*/
+      for(int i=0;i<5;i++)
+      {
+            int index = value.indexOf("?");
+            int val = 0;
+            if(index!=-1)
+            {
+              val = value.substring(0, index).toInt();
+              value = value.substring(index+1);
+            }
+            else
+            {
+              val=value.toInt();
+            }
+           Serial.print("finger");
+           Serial.print(i);
+           Serial.print("=");
+           Serial.println(val);
+           analogWrite(fingers[i], val); 
+      }
+      reponse = "";
+      findGet=false;
+      findHttp=false;
+    }
   
-  int index1 = reponse.indexOf(":GET");
   
-  if(index1 != -1)
-  {
-    String valueStr = reponse.substring(index1 + 6, reponse.indexOf("HTTP/") - 1);
-    
-    int intensityThumb = valueStr.substring(0, valueStr.indexOf("?")).toInt();
-    valueStr = valueStr.substring(valueStr.indexOf("?") + 1);
-    int intensityIndex = valueStr.substring(0, valueStr.indexOf("?")).toInt();
-    valueStr = valueStr.substring(valueStr.indexOf("?") + 1);
-    int intensityMiddle = valueStr.substring(0, valueStr.indexOf("?")).toInt();
-    valueStr = valueStr.substring(valueStr.indexOf("?") + 1);
-    int intensityRing = valueStr.substring(0, valueStr.indexOf("?")).toInt();
-    valueStr = valueStr.substring(valueStr.indexOf("?") + 1);
-    int intensityPinky = valueStr.toInt();
-    
-    analogWrite(vibThumb, intensityThumb); 
-    analogWrite(vibIndex, intensityIndex); 
-    analogWrite(vibMiddle, intensityMiddle); 
-    analogWrite(vibRing, intensityRing); 
-    analogWrite(vibPinky, intensityPinky);
-  }
-  
-  //Serial.print("Leaving from recoitDuESP8266\n"); 
-  Serial.print(reponse);   
 }
+  
+
