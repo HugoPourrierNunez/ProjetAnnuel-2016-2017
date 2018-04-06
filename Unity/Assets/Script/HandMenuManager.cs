@@ -34,6 +34,7 @@ public class HandMenuManager : MonoBehaviour {
         {
             //Gamestate: 0(menu), 1(levels), 2(edit), 3(play), 4(end)
             int state = gameManager.getGamestate();
+            UIManagerScript.instance.reinitHands();
             Debug.Log("getGamestate=" +state);
             if (state==0)
             {

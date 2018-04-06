@@ -109,7 +109,8 @@ public class GameManager : MonoBehaviour
     public void setGameState(int nb)
     {
         _gamestate = nb;
-        UIManagerScript.instance.reinitHands();
+        if(UIManagerScript.instance!=null)
+            UIManagerScript.instance.reinitHands();
     }
 
     public void Play()
