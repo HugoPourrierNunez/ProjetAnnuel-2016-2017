@@ -63,7 +63,7 @@ public class TESTHAPTICMANAGER : MonoBehaviour {
                     break;
             }
         }
-       
+        
         valueChanged = true;
     }
 

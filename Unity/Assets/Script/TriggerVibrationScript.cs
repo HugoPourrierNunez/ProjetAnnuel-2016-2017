@@ -13,6 +13,8 @@ public class TriggerVibrationScript : MonoBehaviour {
     [SerializeField]
     int intensity;
 
+    bool colision;
+
     // Use this for initialization
     void Start () {
 		
@@ -20,13 +22,14 @@ public class TriggerVibrationScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        
     }
 
     void OnCollisionEnter(Collision col)
     {
         if(col.gameObject.layer == 5) // UI Layer
         {
+            colision = true;
             Debug.Log("Collision Enter pin : " + pin);
             VibrorRequestScript.getInstance().SetIP(indexGlove);
             int[] pins = new int[1];
@@ -39,11 +42,25 @@ public class TriggerVibrationScript : MonoBehaviour {
     {
         if (col.gameObject.layer == 5) // UI Layer
         {
-            //Debug.Log("Collision Exit pin : " + pin);
-            VibrorRequestScript.getInstance().SetIP(indexGlove);
-            int[] pins = new int[1];
-            pins[0] = pin;
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
+            endCollision();
+        }
+    }
+
+    void endCollision()
+    {
+        colision = false;
+        //Debug.Log("Collision Exit pin : " + pin);
+        VibrorRequestScript.getInstance().SetIP(indexGlove);
+        int[] pins = new int[1];
+        pins[0] = pin;
+        VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
+    }
+
+    void OnDisable()
+    {
+        if (colision)
+        {
+            endCollision();
         }
     }
 }

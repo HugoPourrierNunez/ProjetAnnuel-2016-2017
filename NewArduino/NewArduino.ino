@@ -22,8 +22,8 @@ String httpString = " HTTP/";
 
 bool findGet = false, findHttp=false;
 String reponse = "";
-
 int sensorValue = 0;
+
 /****************************************************************/
 /*                             INIT                             */
 /****************************************************************/

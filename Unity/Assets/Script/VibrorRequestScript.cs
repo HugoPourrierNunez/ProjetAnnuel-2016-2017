@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 public class VibrorRequestScript : MonoBehaviour {
 
@@ -21,9 +22,57 @@ public class VibrorRequestScript : MonoBehaviour {
     private int intensityVibrationPinky = 0;
     int delay = 200;
     int timeStock = 0;
-    private bool valueChanged = false;
+    private static bool valueChanged = false;
+
+
+    Mutex mute = new Mutex();
 
     static private VibrorRequestScript instance;
+
+    //Thread thread;
+
+    public static void vibration()
+    {
+        instance.sendVibration();
+    }
+
+    public void sendVibration()
+    {
+
+        /* Debug.Log("Send request 1");
+         mute.WaitOne();
+         Debug.Log("Send request 2");
+         if (VibrorRequestScript.valueChanged == false)
+         {
+             mute.ReleaseMutex();
+             Debug.Log("Send request 3");
+             return;
+         }
+
+         valueChanged = false;
+
+         mute.ReleaseMutex();*/
+
+
+        Debug.Log("Send request 4");
+        //this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f) % 1000;
+        // format request : http://ip/intensityFinger1?intensityFinger2...
+
+        // TCP
+        Debug.Log("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
+        WebRequest request = WebRequest.Create("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
+        request.Proxy = null;
+        request.Timeout = 80;
+        WebResponse response = request.GetResponse();
+
+        /* // UDP
+        string strRequest = "http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky;
+        UdpClient request = new UdpClient();
+        byte[] data = Encoding.ASCII.GetBytes(strRequest);
+        request.Send(data, data.Length, ip, 5001);*/
+        Debug.Log("Finish to send");
+    }
+
 
     public static VibrorRequestScript getInstance()
     {
@@ -43,7 +92,7 @@ public class VibrorRequestScript : MonoBehaviour {
     {
         for (int i = 0; i < pins.Length; ++i)
         {
-            Debug.Log("Changed pin intensity for pin : " + pins[i] + " with intensity " + intensity);
+            Debug.Log("Changed pin intensity for pin "+ Time.timeSinceLevelLoad + " : " + pins[i] + " with intensity " + intensity);
             switch (pins[i])
             {
                 case 3:
@@ -63,8 +112,12 @@ public class VibrorRequestScript : MonoBehaviour {
                     break;
             }
         }
-       
+        Thread thread = new Thread(() => VibrorRequestScript.vibration());
+        thread.Start();
+
+        /*mute.WaitOne();
         valueChanged = true;
+        mute.ReleaseMutex();*/
     }
 
     // Use this for initialization
@@ -73,30 +126,15 @@ public class VibrorRequestScript : MonoBehaviour {
         instance = this;
         this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f) % 1000;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    void Destroy()
     {
-        if (valueChanged/* && ((int)(Time.timeSinceLevelLoad * 1000f) % 1000) - this.timeStock > 200*/)
-        {
-            Debug.Log("Send request");
-            valueChanged = false;
-            this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f) % 1000;
-            // format request : http://ip/intensityFinger1?intensityFinger2...
+        //thread.Abort();
+    }
 
-            // TCP
-            Debug.Log("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
-            WebRequest request = WebRequest.Create("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
-            request.Proxy = null;
-            request.Timeout = 80;
-            WebResponse response = request.GetResponse();
-
-            /* // UDP
-            string strRequest = "http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky;
-            UdpClient request = new UdpClient();
-            byte[] data = Encoding.ASCII.GetBytes(strRequest);
-            request.Send(data, data.Length, ip, 5001);*/
-            Debug.Log("Finish to send");
-        }
+        // Update is called once per frame
+        void Update ()
+    {
+        
     }
 }
