@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Net.Sockets;
 using System.Text;
 
-public class VibrorRequestScript : MonoBehaviour {
+public class TESTHAPTICMANAGER : MonoBehaviour {
 
     [SerializeField]
     private string ipLeftGlove = "127.0.0.1";
@@ -23,9 +23,9 @@ public class VibrorRequestScript : MonoBehaviour {
     int timeStock = 0;
     private bool valueChanged = false;
 
-    static private VibrorRequestScript instance;
+    static private TESTHAPTICMANAGER instance;
 
-    public static VibrorRequestScript getInstance()
+    public static TESTHAPTICMANAGER getInstance()
     {
         return instance;
     }
@@ -88,7 +88,7 @@ public class VibrorRequestScript : MonoBehaviour {
             Debug.Log("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
             WebRequest request = WebRequest.Create("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
             request.Proxy = null;
-            request.Timeout = 80;
+            request.Timeout = 50;
             WebResponse response = request.GetResponse();
 
             /* // UDP

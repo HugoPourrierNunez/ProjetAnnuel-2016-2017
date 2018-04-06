@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerVibrationScript : MonoBehaviour {
+public class TESTVIBRATIONTRIGGER : MonoBehaviour {
 
     [SerializeField]
     int indexGlove = 1;
@@ -28,10 +28,16 @@ public class TriggerVibrationScript : MonoBehaviour {
         if(col.gameObject.layer == 5) // UI Layer
         {
             Debug.Log("Collision Enter pin : " + pin);
-            VibrorRequestScript.getInstance().SetIP(indexGlove);
+            TESTHAPTICMANAGER.getInstance().SetIP(indexGlove);
             int[] pins = new int[1];
             pins[0] = pin;
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, intensity);
+
+            if(col.gameObject.name == "VibrorCubeHigh")
+                TESTHAPTICMANAGER.getInstance().ChangeIntensityForFinger(pins, 250);
+            if (col.gameObject.name == "VibrorCubeMiddle")
+                TESTHAPTICMANAGER.getInstance().ChangeIntensityForFinger(pins, 125);
+            if (col.gameObject.name == "VibrorCubeLow")
+                TESTHAPTICMANAGER.getInstance().ChangeIntensityForFinger(pins, 80);
         }
     }
 
@@ -40,10 +46,10 @@ public class TriggerVibrationScript : MonoBehaviour {
         if (col.gameObject.layer == 5) // UI Layer
         {
             //Debug.Log("Collision Exit pin : " + pin);
-            VibrorRequestScript.getInstance().SetIP(indexGlove);
+            TESTHAPTICMANAGER.getInstance().SetIP(indexGlove);
             int[] pins = new int[1];
             pins[0] = pin;
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
+            TESTHAPTICMANAGER.getInstance().ChangeIntensityForFinger(pins, 0);
         }
     }
 }
