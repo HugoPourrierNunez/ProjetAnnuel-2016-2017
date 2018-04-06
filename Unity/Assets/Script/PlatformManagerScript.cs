@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -404,7 +405,6 @@ public class PlatformManagerScript : MonoBehaviour {
             }
         }
 
-
         if(nearestPlatform != null)
         {
             if (nearest < distanceClose)
@@ -421,6 +421,13 @@ public class PlatformManagerScript : MonoBehaviour {
 
                     nearestPlatform.setPlatformIn(platform);
                     platform.setPlatformOut(nearestPlatform);
+                    
+                    WebRequest request = WebRequest.Create("http://192.168.0.102/0?200?0?0?0");
+
+                    request.Proxy = null;
+                    request.Timeout = 100;
+                    WebResponse response = request.GetResponse();
+
                     return true;
 
                 }

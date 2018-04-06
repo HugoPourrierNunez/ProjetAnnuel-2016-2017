@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrabScript : MonoBehaviour {
+public class GrabScript : MonoBehaviour
+{
 
     private GameObject pinchedPlatform = null;
     private GameObject collidedPlatform = null;
     private bool unclipped = false;
+    private bool requestSended = false;
 
     [SerializeField]
     SpawnManager spawnManager;
@@ -64,7 +66,7 @@ public class GrabScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if(!spawnManager.isSpawning() && other.gameObject.tag == "Piece" && collidedPlatform== null)
+        if (!spawnManager.isSpawning() && other.gameObject.tag == "Piece" && collidedPlatform == null)
         {
             collidedPlatform = other.gameObject.transform.parent.gameObject;
             updatePinchCollision();
@@ -80,14 +82,35 @@ public class GrabScript : MonoBehaviour {
 
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         if ((isRight && !spawnManager.isRightPinchActive()) || (!isRight && !spawnManager.isLeftPinchActive()))
         {
             pinchedPlatform = null;
+            if (requestSended)
+            {
+                VibrorRequestScript.getInstance().SetIP(2);
+                int[] pins = new int[3];
+                pins[0] = 3;
+                pins[1] = 5;
+                pins[2] = 9;
+                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
+                this.requestSended = false;
+            }
         }
-        if(pinchedPlatform!=null)
+        if (pinchedPlatform != null)
         {
             pinchedPlatform.transform.position = transform.position;
+            if (!requestSended)
+            {
+                this.requestSended = true;
+                VibrorRequestScript.getInstance().SetIP(2);
+                int[] pins = new int[3];
+                pins[0] = 3;
+                pins[1] = 5;
+                pins[2] = 9;
+                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 150);
+            }
         }
-	}
+    }
 }
