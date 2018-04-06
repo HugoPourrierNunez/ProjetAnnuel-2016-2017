@@ -8,28 +8,33 @@ public class TriggerVibrationScript : MonoBehaviour {
     int indexGlove = 1;
 
     [SerializeField]
-    int pin;
+    public int pin;
 
     [SerializeField]
     int intensity;
 
-    bool colision;
+    public Collision colision;
 
     // Use this for initialization
     void Start () {
 		
 	}
+    
 	
 	// Update is called once per frame
 	void Update () {
-        
+        /*if (!gameObject.activeInHierarchy )
+        {
+            Debug.Log("disable");
+            endCollision();
+        }*/
     }
 
     void OnCollisionEnter(Collision col)
     {
         if(col.gameObject.layer == 5) // UI Layer
         {
-            colision = true;
+            colision = col;
             Debug.Log("Collision Enter pin : " + pin);
             VibrorRequestScript.getInstance().SetIP(indexGlove);
             int[] pins = new int[1];
@@ -40,27 +45,27 @@ public class TriggerVibrationScript : MonoBehaviour {
 
     void OnCollisionExit(Collision col)
     {
+        Debug.Log("OnCollisionExit");
         if (col.gameObject.layer == 5) // UI Layer
         {
+
+            Debug.Log("OnCollisionExit2");
             endCollision();
         }
     }
 
-    void endCollision()
+    public void endCollision()
     {
-        colision = false;
-        //Debug.Log("Collision Exit pin : " + pin);
-        VibrorRequestScript.getInstance().SetIP(indexGlove);
-        int[] pins = new int[1];
-        pins[0] = pin;
-        VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
-    }
-
-    void OnDisable()
-    {
-        if (colision)
+        if(colision!=null)
         {
-            endCollision();
+            colision = null;
+            //Debug.Log("Collision Exit pin : " + pin);
+            VibrorRequestScript.getInstance().SetIP(indexGlove);
+            int[] pins = new int[1];
+            pins[0] = pin;
+            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
         }
+        
     }
+
 }
