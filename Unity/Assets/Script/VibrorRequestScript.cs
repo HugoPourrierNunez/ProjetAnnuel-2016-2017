@@ -54,12 +54,12 @@ public class VibrorRequestScript : MonoBehaviour {
          mute.ReleaseMutex();*/
 
 
-        Debug.Log("Send request 4");
+        //Debug.Log("Send request 4");
         //this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f) % 1000;
         // format request : http://ip/intensityFinger1?intensityFinger2...
 
         // TCP
-        Debug.Log("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
+        //Debug.Log("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
         WebRequest request = WebRequest.Create("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
         request.Proxy = null;
         request.Timeout = 80;
@@ -92,7 +92,7 @@ public class VibrorRequestScript : MonoBehaviour {
     {
         for (int i = 0; i < pins.Length; ++i)
         {
-            Debug.Log("Changed pin intensity for pin "+ Time.timeSinceLevelLoad + " : " + pins[i] + " with intensity " + intensity);
+            //Debug.Log("Changed pin intensity for pin "+ Time.timeSinceLevelLoad + " : " + pins[i] + " with intensity " + intensity);
             switch (pins[i])
             {
                 case 3:

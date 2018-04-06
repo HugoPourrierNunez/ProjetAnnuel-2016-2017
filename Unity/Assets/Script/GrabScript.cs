@@ -109,7 +109,7 @@ public class GrabScript : MonoBehaviour
                 pins[0] = 3;
                 pins[1] = 5;
                 pins[2] = 9;
-                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 150);
+                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 100);
             }
         }
     }

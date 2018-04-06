@@ -37,6 +37,9 @@ public class SpawnManager : MonoBehaviour {
 
     bool spawning = false;
 
+    float lastSendTime = 0;
+    float elapse = 1.0f;
+
     public bool isSpawning()
     {
         return spawning;
@@ -71,7 +74,34 @@ public class SpawnManager : MonoBehaviour {
             {
                 float distance = Mathf.Abs(rightPinch.transform.position.x - leftPinch.transform.position.x);
                 //Debug.Log("distance x" + distance);
-                platform.getCube().transform.localScale = new Vector3(distance*10, platform.getCube().transform.localScale.y, platform.getCube().transform.localScale.z);
+                Vector3 scale = new Vector3(distance*10, platform.getCube().transform.localScale.y, platform.getCube().transform.localScale.z);
+                if (scale.x > 8)
+                    scale.x = 8;
+
+                platform.getCube().transform.localScale = scale;
+
+                float timeStock = Time.timeSinceLevelLoad;
+                Debug.Log("timeStock=" + timeStock);
+                Debug.Log("lastSendTime=" + lastSendTime);
+                if (timeStock-lastSendTime>elapse)
+                {
+                    Debug.Log("Vibration spawn");
+                    lastSendTime = timeStock;
+
+                    double vibration = 100.0f + (scale.x * 155.0f / 8.0f);
+
+
+                    Debug.Log("vibration=" + vibration);
+
+                    VibrorRequestScript.getInstance().SetIP(2);
+                    VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3,5,9 }, (int) vibration);
+
+
+                    VibrorRequestScript.getInstance().SetIP(1);
+                    VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3, 5, 9 }, (int)vibration);
+                }
+
+
 
                 float diffX = rightPinch.transform.position.x - platform.transform.position.x;
                 float diffY = rightPinch.transform.position.y - platform.transform.position.y;
@@ -110,8 +140,23 @@ public class SpawnManager : MonoBehaviour {
         }
         else
         {
+            if(spawning==true && platform!=null)
+            {
+                if (platform.getCube().transform.localScale.x < 1)
+                    platform.unactive();
+
+                VibrorRequestScript.getInstance().SetIP(2);
+                VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3, 5, 9 }, 0);
+
+
+                VibrorRequestScript.getInstance().SetIP(1);
+                VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3, 5, 9 }, 0);
+            }
+
             spawning = false;
             platform = null;
+
+
         }
 	}
 

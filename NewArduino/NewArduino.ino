@@ -170,7 +170,7 @@ void recoitDuESP8266Short()
            Serial.print(i);
            Serial.print("=");
            Serial.println(val);
-           analogWrite(fingers[i], val); 
+           analogWrite(fingers[i], val);
       }
       reponse = "";
       findGet=false;
