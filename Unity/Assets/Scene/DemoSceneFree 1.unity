@@ -4662,17 +4662,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f529c98d237c514092b8e2f8d681dc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fingers:
-  - {fileID: 893806825}
-  - {fileID: 893806824}
-  - {fileID: 893806823}
-  - {fileID: 893806822}
-  - {fileID: 893806821}
+  fingersRight:
   - {fileID: 1937956186}
   - {fileID: 1937956185}
   - {fileID: 1937956184}
   - {fileID: 1937956183}
   - {fileID: 1937956182}
+  fingersLeft:
+  - {fileID: 893806825}
+  - {fileID: 893806824}
+  - {fileID: 893806823}
+  - {fileID: 893806822}
+  - {fileID: 893806821}
 --- !u!4 &380905115
 Transform:
   m_ObjectHideFlags: 0

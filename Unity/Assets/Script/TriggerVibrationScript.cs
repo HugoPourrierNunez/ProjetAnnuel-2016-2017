@@ -54,6 +54,12 @@ public class TriggerVibrationScript : MonoBehaviour {
         }
     }
 
+    private void OnDisable()
+    {
+
+        Debug.Log("OnDisable");
+    }
+
     public void endCollision()
     {
         if(colision!=null)

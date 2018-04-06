@@ -5,7 +5,11 @@ using UnityEngine;
 public class UIManagerScript : MonoBehaviour {
 
     [SerializeField]
-    TriggerVibrationScript[] fingers;
+    TriggerVibrationScript[] fingersRight;
+
+
+    [SerializeField]
+    TriggerVibrationScript[] fingersLeft;
 
     public static UIManagerScript instance;
 	// Use this for initialization
@@ -13,19 +17,34 @@ public class UIManagerScript : MonoBehaviour {
         instance = this;
     }
 
-    public void checkUI()
+    public void reinitHands()
     {
-        foreach(TriggerVibrationScript f in fingers)
-        {
 
-            Debug.Log("checkUI");
-            Debug.Log("active="+ f.colision);
-            if (f.colision!=null && !f.colision.gameObject.activeInHierarchy)
-            {
-                f.colision = null;
-                int[] pins = { f.pin };
-                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
-            }
+        Debug.Log("reinitHands");
+
+        List<int> pins = new List<int>();
+        foreach (TriggerVibrationScript f in fingersRight)
+        {
+            pins.Add(f.pin);
+            
+        }
+        if(fingersRight.Length>0)
+        {
+            VibrorRequestScript.getInstance().SetIP(2);
+            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins.ToArray(), 0);
+        }
+
+
+        pins.Clear();
+        foreach (TriggerVibrationScript f in fingersLeft)
+        {
+            pins.Add(f.pin);
+
+        }
+        if (fingersLeft.Length > 0)
+        {
+            VibrorRequestScript.getInstance().SetIP(1);
+            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins.ToArray(), 0);
         }
     }
 	
