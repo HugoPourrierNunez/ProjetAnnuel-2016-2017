@@ -18,9 +18,6 @@ public class CanvasManager : MonoBehaviour
     [SerializeField]
     Button btnPlayCanvasEdit;
 
-    [SerializeField]
-    Button btnMenuEditCanvasEdit;
-
     bool confirmationCanvasPositionSet = false;
 
     // Use this for initialization
@@ -35,9 +32,6 @@ public class CanvasManager : MonoBehaviour
         Debug.Log("CanvasManager platform ? : " + platformManager.isTherePlatform);
         if(!platformManager.isTherePlatform)
         {
-            //var colorsBtn = btnPlayCanvasEdit.colors;
-            //colorsBtn.disabledColor = new Color(221, 221, 221, 128);
-            //btnPlayCanvasEdit.colors = btnMenuEditCanvasEdit.colors;
             btnPlayCanvasEdit.interactable = false;
         }
         else
