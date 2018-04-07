@@ -125,6 +125,11 @@ public class GameManager : MonoBehaviour
         handMenuManager.activateContextualHandMenu(true);
     }
 
+    public void SetActiveGameObject(GameObject go, bool isActive)
+    {
+        go.SetActive(isActive);
+    }
+
     public void Edit()
     {
         if (_gamestate == 4)
