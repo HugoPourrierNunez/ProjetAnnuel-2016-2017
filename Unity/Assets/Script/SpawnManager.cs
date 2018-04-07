@@ -81,17 +81,15 @@ public class SpawnManager : MonoBehaviour {
                 platform.getCube().transform.localScale = scale;
 
                 float timeStock = Time.timeSinceLevelLoad;
-                Debug.Log("timeStock=" + timeStock);
-                Debug.Log("lastSendTime=" + lastSendTime);
+                //Debug.Log("timeStock=" + timeStock);
+                //Debug.Log("lastSendTime=" + lastSendTime);
                 if (timeStock-lastSendTime>elapse)
                 {
-                    Debug.Log("Vibration spawn");
+                    //Debug.Log("Vibration spawn");
                     lastSendTime = timeStock;
 
                     double vibration = 100.0f + (scale.x * 155.0f / 8.0f);
-
-
-                    Debug.Log("vibration=" + vibration);
+                    //Debug.Log("vibration=" + vibration);
 
                     VibrorRequestScript.getInstance().SetIP(2);
                     VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3,5,9 }, (int) vibration);

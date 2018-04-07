@@ -45,19 +45,17 @@ public class TriggerVibrationScript : MonoBehaviour {
 
     void OnCollisionExit(Collision col)
     {
-        Debug.Log("OnCollisionExit");
+        //Debug.Log("OnCollisionExit");
         if (col.gameObject.layer == 5) // UI Layer
         {
-
-            Debug.Log("OnCollisionExit2");
+            //Debug.Log("OnCollisionExit2");
             endCollision();
         }
     }
 
     private void OnDisable()
     {
-
-        Debug.Log("OnDisable");
+        //Debug.Log("OnDisable");
     }
 
     public void endCollision()

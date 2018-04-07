@@ -35,6 +35,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
     private PlatformScript lastPlatformUnClipped=null;
     private bool connectedOnIn = true;
     private bool canReAttach = true;
+    public bool isTherePlatform = false;
 
     public void updatePlatformPosition(Vector3 delta)
     {
@@ -62,6 +63,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
             p.transform.parent = transform;
             allPlatform.Add(p);
         }
+        isTherePlatform = false;
     }
 
     public void setPlatformStart(PlatformScript p)
@@ -89,6 +91,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        Debug.Log("Nb platform : " + allPlatform.Count);
         if(!canReAttach && lastPlatformGrabAndUnClipped!=null && lastPlatformUnClipped!=null)
         {
             if(connectedOnIn)
@@ -143,6 +146,8 @@ public class VRPlatformManagerScript : MonoBehaviour {
         {
             if (!allPlatform[i].gameObject.activeInHierarchy)
             {
+                Debug.Log("CREATE PLATFORM");
+                isTherePlatform = true;
                 allPlatform[i].gameObject.SetActive(true);
                 return allPlatform[i];
             }
@@ -274,6 +279,8 @@ public class VRPlatformManagerScript : MonoBehaviour {
             if(allPlatform[i]!=start)
                 allPlatform[i].unactive();
         }
+
+        isTherePlatform = false;
     }
     
     public bool unclip(GameObject grabObject)

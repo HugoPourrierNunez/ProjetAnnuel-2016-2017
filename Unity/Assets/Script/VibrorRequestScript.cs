@@ -81,7 +81,7 @@ public class VibrorRequestScript : MonoBehaviour {
 
     public void SetIP(int ipParam)
     {
-        Debug.Log("IP changed to : " + ipParam);
+        //Debug.Log("IP changed to : " + ipParam);
         if (ipParam == 1)
             ip = ipLeftGlove;
         else if (ipParam == 2)

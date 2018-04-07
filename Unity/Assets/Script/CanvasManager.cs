@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
@@ -9,7 +10,16 @@ public class CanvasManager : MonoBehaviour
     private GameObject canvasConfirmation;
 
     [SerializeField]
+    VRPlatformManagerScript platformManager;
+
+    [SerializeField]
     private Camera playerCamera;
+
+    [SerializeField]
+    Button btnPlayCanvasEdit;
+
+    [SerializeField]
+    Button btnMenuEditCanvasEdit;
 
     bool confirmationCanvasPositionSet = false;
 
@@ -22,7 +32,19 @@ public class CanvasManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Debug.Log("CanvasManager platform ? : " + platformManager.isTherePlatform);
+        if(!platformManager.isTherePlatform)
+        {
+            //var colorsBtn = btnPlayCanvasEdit.colors;
+            //colorsBtn.disabledColor = new Color(221, 221, 221, 128);
+            //btnPlayCanvasEdit.colors = btnMenuEditCanvasEdit.colors;
+            btnPlayCanvasEdit.interactable = false;
+        }
+        else
+        {
+            if(!btnPlayCanvasEdit.interactable)
+                btnPlayCanvasEdit.interactable = true;
+        }
     }
 
     public void ShowConfirmationCanvas()
