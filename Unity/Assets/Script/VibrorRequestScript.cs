@@ -5,8 +5,10 @@ using UnityEngine;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using UnityEngine.Networking;
 
-public class VibrorRequestScript : MonoBehaviour {
+public class VibrorRequestScript : MonoBehaviour
+{
 
     [SerializeField]
     private string ipLeftGlove = "127.0.0.1";
@@ -23,54 +25,40 @@ public class VibrorRequestScript : MonoBehaviour {
     int delay = 200;
     int timeStock = 0;
     private static bool valueChanged = false;
-
+    static int timer = 0;
 
     Mutex mute = new Mutex();
-
+    static bool bb = false;
+    Thread thread = null;
     static private VibrorRequestScript instance;
 
     //Thread thread;
 
-    public static void vibration()
+    public static void vibration(int delay)
     {
+        Thread.Sleep(delay);
         instance.sendVibration();
     }
 
     public void sendVibration()
     {
-
-        /* Debug.Log("Send request 1");
-         mute.WaitOne();
-         Debug.Log("Send request 2");
-         if (VibrorRequestScript.valueChanged == false)
-         {
-             mute.ReleaseMutex();
-             Debug.Log("Send request 3");
-             return;
-         }
-
-         valueChanged = false;
-
-         mute.ReleaseMutex();*/
-
-
-        //Debug.Log("Send request 4");
-        //this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f) % 1000;
-        // format request : http://ip/intensityFinger1?intensityFinger2...
-
         // TCP
-        //Debug.Log("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
-        WebRequest request = WebRequest.Create("http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky);
-        request.Proxy = null;
-        request.Timeout = 80;
-        WebResponse response = request.GetResponse();
+        //Debug.Log("http://" + ip + "/?=" + intensityVibrationThumb + "&=" + intensityVibrationIndex + "&=" + intensityVibrationMiddle + "&=" + intensityVibrationRing + "&=" + intensityVibrationPinky);
 
-        /* // UDP
-        string strRequest = "http://" + ip + "/" + intensityVibrationThumb + "?" + intensityVibrationIndex + "?" + intensityVibrationMiddle + "?" + intensityVibrationRing + "?" + intensityVibrationPinky;
-        UdpClient request = new UdpClient();
-        byte[] data = Encoding.ASCII.GetBytes(strRequest);
-        request.Send(data, data.Length, ip, 5001);*/
+        
+        WWWForm form = new WWWForm();
+        form.AddField("", "" + intensityVibrationThumb);
+        form.AddField("", "" + intensityVibrationIndex);
+        form.AddField("", "" + intensityVibrationMiddle);
+        form.AddField("", "" + intensityVibrationRing);
+        form.AddField("", "" + intensityVibrationPinky);
+        
+
+        UnityWebRequest uwr = UnityWebRequest.Post("http://" + ipRightGlove, form);
+        uwr.Send();
+
         Debug.Log("Finish to send");
+        timer = (int)(Time.timeSinceLevelLoad * 1000f);
     }
 
 
@@ -90,6 +78,7 @@ public class VibrorRequestScript : MonoBehaviour {
 
     public void ChangeIntensityForFinger(int[] pins, int intensity)
     {
+        intensity *= 4;
         for (int i = 0; i < pins.Length; ++i)
         {
             //Debug.Log("Changed pin intensity for pin "+ Time.timeSinceLevelLoad + " : " + pins[i] + " with intensity " + intensity);
@@ -112,8 +101,26 @@ public class VibrorRequestScript : MonoBehaviour {
                     break;
             }
         }
-        Thread thread = new Thread(() => VibrorRequestScript.vibration());
-        thread.Start();
+        /*Thread thread = new Thread(() => VibrorRequestScript.vibration());
+        thread.Start();*/
+       /* int res = (int)(Time.timeSinceLevelLoad * 1000f) - timer;
+        if (res < 100)
+        {
+            Debug.Log("Test");
+
+            if (thread != null)
+            {
+                thread.Abort();
+            }
+
+            thread = new Thread(() => VibrorRequestScript.vibration(100 - res));
+            thread.Start();
+        }
+        else
+        {
+            thread = new Thread(() => VibrorRequestScript.vibration(0));
+            thread.Start();
+        }*/
 
         /*mute.WaitOne();
         valueChanged = true;
@@ -121,10 +128,10 @@ public class VibrorRequestScript : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         instance = this;
-        this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f) % 1000;
+        this.timeStock = (int)(Time.timeSinceLevelLoad * 1000f);
     }
 
     void Destroy()
@@ -132,9 +139,13 @@ public class VibrorRequestScript : MonoBehaviour {
         //thread.Abort();
     }
 
-        // Update is called once per frame
-        void Update ()
+    // Update is called once per frame
+    void Update()
     {
-        
+        if ((int)(Time.timeSinceLevelLoad * 1000f) - timer > 100)
+        {
+            timer = (int)(Time.timeSinceLevelLoad * 1000f);
+            sendVibration();
+        }
     }
 }
