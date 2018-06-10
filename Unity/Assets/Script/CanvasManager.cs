@@ -29,7 +29,7 @@ public class CanvasManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("CanvasManager platform ? : " + platformManager.isTherePlatform);
+        //Debug.Log("CanvasManager platform ? : " + platformManager.isTherePlatform);
         if(!platformManager.isTherePlatform)
         {
             btnPlayCanvasEdit.interactable = false;

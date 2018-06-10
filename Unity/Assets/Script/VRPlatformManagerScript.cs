@@ -91,7 +91,7 @@ public class VRPlatformManagerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        Debug.Log("Nb platform : " + allPlatform.Count);
+        //Debug.Log("Nb platform : " + allPlatform.Count);
         if(!canReAttach && lastPlatformGrabAndUnClipped!=null && lastPlatformUnClipped!=null)
         {
             if(connectedOnIn)
