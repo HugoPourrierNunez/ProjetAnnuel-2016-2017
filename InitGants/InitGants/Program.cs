@@ -14,14 +14,14 @@ namespace InitGants
         {
             int[] fingers = { 0, 0, 0, 0, 0};
 
-            int val = 255;
+            int val = 1020;
 
             WebRequest request;
             WebResponse response;
 
             int mode = 1;
 
-            int delay = 400;
+            int delay = 1000;
 
             if(mode==2)
             {
@@ -38,12 +38,14 @@ namespace InitGants
                 
                 fingers[i] = val;
                 Console.WriteLine("Send right finger " + i);
-                request = WebRequest.Create("http://192.168.0.101/"+fingers[0]+"?"+fingers[1]+"?"+fingers[2]+"?"+fingers[3]+"?"+fingers[4]);
+                request = WebRequest.Create("http://192.168.43.65/?="+fingers[0]+"&="+fingers[1]+"&="+fingers[2]+"&="+fingers[3]+"&="+fingers[4]);
+
                 request.Proxy = null;
                 request.Timeout = 50;
                 try
                 {
                     response = request.GetResponse();
+                    
                 }
                 catch(Exception e)
                 {
@@ -53,7 +55,7 @@ namespace InitGants
             }
             for (int j = 0; j < fingers.Length; j++)
                 fingers[j] = 0;
-            request = WebRequest.Create("http://192.168.0.101/" + fingers[0] + "?" + fingers[1] + "?" + fingers[2] + "?" + fingers[3] + "?" + fingers[4]);
+            request = WebRequest.Create("http://192.168.43.65/?=" + fingers[0] + "&=" + fingers[1] + "&=" + fingers[2] + "&=" + fingers[3] + "&=" + fingers[4]);
             request.Proxy = null;
             request.Timeout = 50;
             try
