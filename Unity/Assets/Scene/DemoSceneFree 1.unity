@@ -3228,8 +3228,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf9ee175af4b705429d7f9e2cd22ed11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ipLeftGlove: 192.168.0.102
-  ipRightGlove: 192.168.43.65
+  activateLeft: 1
+  ipLeftGlove: 192.168.0.103
+  activateRight: 1
+  ipRightGlove: 192.168.0.102
+  delayUpdate: 150
+  delayMin: 50
 --- !u!1001 &242091675
 Prefab:
   m_ObjectHideFlags: 0
@@ -11916,7 +11920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 1
-  pin: 11
+  pin: 3
   intensity: 150
 --- !u!114 &893806822
 MonoBehaviour:
@@ -11930,7 +11934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 1
-  pin: 6
+  pin: 4
   intensity: 150
 --- !u!114 &893806823
 MonoBehaviour:
@@ -11944,7 +11948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 1
-  pin: 9
+  pin: 2
   intensity: 150
 --- !u!114 &893806824
 MonoBehaviour:
@@ -11958,7 +11962,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 1
-  pin: 5
+  pin: 1
   intensity: 150
 --- !u!114 &893806825
 MonoBehaviour:
@@ -11972,7 +11976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 1
-  pin: 3
+  pin: 0
   intensity: 150
 --- !u!1 &899617965
 GameObject:
@@ -23297,7 +23301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 2
-  pin: 11
+  pin: 3
   intensity: 150
 --- !u!114 &1937956183
 MonoBehaviour:
@@ -23311,7 +23315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 2
-  pin: 6
+  pin: 4
   intensity: 150
 --- !u!114 &1937956184
 MonoBehaviour:
@@ -23339,7 +23343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 2
-  pin: 5
+  pin: 1
   intensity: 150
 --- !u!114 &1937956186
 MonoBehaviour:
@@ -23353,7 +23357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexGlove: 2
-  pin: 3
+  pin: 0
   intensity: 150
 --- !u!1001 &1938794964
 Prefab:

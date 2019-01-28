@@ -89,12 +89,11 @@ public class GrabScript : MonoBehaviour
             pinchedPlatform = null;
             if (requestSended)
             {
-                VibrorRequestScript.getInstance().SetIP(2);
                 int[] pins = new int[3];
                 pins[0] = 3;
                 pins[1] = 5;
                 pins[2] = 9;
-                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
+                VibrorRequestScript.getInstance().setFingerVibrationRight(0, 0, 0, 0, 0);
                 this.requestSended = false;
             }
         }
@@ -104,12 +103,11 @@ public class GrabScript : MonoBehaviour
             if (!requestSended)
             {
                 this.requestSended = true;
-                VibrorRequestScript.getInstance().SetIP(2);
                 int[] pins = new int[3];
                 pins[0] = 3;
                 pins[1] = 5;
                 pins[2] = 9;
-                VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 100);
+                VibrorRequestScript.getInstance().setFingerVibrationRight(500, 500, 500, 0,0);
             }
         }
     }

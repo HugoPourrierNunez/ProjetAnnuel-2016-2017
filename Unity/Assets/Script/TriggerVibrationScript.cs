@@ -35,11 +35,8 @@ public class TriggerVibrationScript : MonoBehaviour {
         if(col.gameObject.layer == 5) // UI Layer
         {
             colision = col;
-            Debug.Log("Collision Enter pin : " + pin);
-            VibrorRequestScript.getInstance().SetIP(indexGlove);
-            int[] pins = new int[1];
-            pins[0] = pin;
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, intensity);
+            //Debug.Log("Collision Enter pin : " + pin);
+            VibrorRequestScript.getInstance().setOneFingerVibration(intensity, pin,indexGlove==2);
         }
     }
 
@@ -64,10 +61,9 @@ public class TriggerVibrationScript : MonoBehaviour {
         {
             colision = null;
             //Debug.Log("Collision Exit pin : " + pin);
-            VibrorRequestScript.getInstance().SetIP(indexGlove);
-            int[] pins = new int[1];
-            pins[0] = pin;
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins, 0);
+
+
+            VibrorRequestScript.getInstance().setOneFingerVibration(0, pin, indexGlove == 2);
         }
         
     }

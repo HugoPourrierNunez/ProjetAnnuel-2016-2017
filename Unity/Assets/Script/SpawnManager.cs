@@ -88,15 +88,15 @@ public class SpawnManager : MonoBehaviour {
                     //Debug.Log("Vibration spawn");
                     lastSendTime = timeStock;
 
-                    double vibration = 100.0f + (scale.x * 155.0f / 8.0f);
+                    double vibration = 200.0f + (scale.x * 155.0f);
                     //Debug.Log("vibration=" + vibration);
 
-                    VibrorRequestScript.getInstance().SetIP(2);
-                    VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3,5,9 }, (int) vibration);
+                    //VibrorRequestScript.getInstance().SetIP(2);
+                    VibrorRequestScript.getInstance().setFingerVibrationBoth((int) vibration, (int)vibration, (int)vibration,0, 0);
 
 
-                    VibrorRequestScript.getInstance().SetIP(1);
-                    VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3, 5, 9 }, (int)vibration);
+                    //VibrorRequestScript.getInstance().SetIP(1);
+                    //VibrorRequestScript.getInstance().setFingerVibrationLeft(new int[] { 3, 5, 9 }, (int)vibration);
                 }
 
 
@@ -143,12 +143,7 @@ public class SpawnManager : MonoBehaviour {
                 if (platform.getCube().transform.localScale.x < 1)
                     platform.unactive();
 
-                VibrorRequestScript.getInstance().SetIP(2);
-                VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3, 5, 9 }, 0);
-
-
-                VibrorRequestScript.getInstance().SetIP(1);
-                VibrorRequestScript.getInstance().ChangeIntensityForFinger(new int[] { 3, 5, 9 }, 0);
+                VibrorRequestScript.getInstance().setFingerVibrationBoth(0,0,0, 0, 0);
             }
 
             spawning = false;

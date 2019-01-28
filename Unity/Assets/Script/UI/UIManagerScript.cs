@@ -22,30 +22,8 @@ public class UIManagerScript : MonoBehaviour {
 
         Debug.Log("reinitHands");
 
-        List<int> pins = new List<int>();
-        foreach (TriggerVibrationScript f in fingersRight)
-        {
-            pins.Add(f.pin);
-            
-        }
-        if(fingersRight.Length>0)
-        {
-            VibrorRequestScript.getInstance().SetIP(2);
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins.ToArray(), 0);
-        }
+        VibrorRequestScript.getInstance().reset();
 
-
-        pins.Clear();
-        foreach (TriggerVibrationScript f in fingersLeft)
-        {
-            pins.Add(f.pin);
-
-        }
-        if (fingersLeft.Length > 0)
-        {
-            VibrorRequestScript.getInstance().SetIP(1);
-            VibrorRequestScript.getInstance().ChangeIntensityForFinger(pins.ToArray(), 0);
-        }
     }
 	
 	// Update is called once per frame
